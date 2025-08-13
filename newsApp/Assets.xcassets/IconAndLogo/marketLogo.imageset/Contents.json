@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "marketLogo.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
