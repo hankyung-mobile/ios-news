@@ -133,20 +133,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         if needUpdate {
-            self.window?.rootViewController = UIStoryboard.init(name: "LaunchScreen", bundle: nil).instantiateInitialViewController()
-            
-            let dialog = UIAlertController(title: "업데이트", message: "앱 업데이트 후 이용해 주세요.", preferredStyle: .alert)
-            let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: { (action) in
-                let url:URL = URL(string: appStoreUrl)!
-                UIApplication.shared.open(url, options: [:], completionHandler: {(success) in exit(0)})
-            })
-            dialog.addAction(action)
-            
-            DispatchQueue.main.async {
-                self.window?.rootViewController?.present(dialog, animated: true, completion: nil)
-            }
-            
-            return true
+//            self.window?.rootViewController = UIStoryboard.init(name: "LaunchScreen", bundle: nil).instantiateInitialViewController()
+//            
+//            let dialog = UIAlertController(title: "업데이트", message: "앱 업데이트 후 이용해 주세요.", preferredStyle: .alert)
+//            let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: { (action) in
+//                let url:URL = URL(string: appStoreUrl)!
+//                UIApplication.shared.open(url, options: [:], completionHandler: {(success) in exit(0)})
+//            })
+//            dialog.addAction(action)
+//            
+//            DispatchQueue.main.async {
+//                self.window?.rootViewController?.present(dialog, animated: true, completion: nil)
+//            }
+//            
+//            return true
             
         }
         
