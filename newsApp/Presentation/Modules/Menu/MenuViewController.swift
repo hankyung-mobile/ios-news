@@ -177,6 +177,7 @@ class MenuViewController: UIViewController {
         } else if let marketItem = item as? MarketMenuItem {
             urlString = marketItem.url
             isSlide = marketItem.isSlide
+            browser = marketItem.browser
             title = marketItem.title
         }
         

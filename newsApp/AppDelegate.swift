@@ -371,7 +371,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 },
                 onError: { error in
                     print("사용자 정보 로드 실패: \(error)")
-                    if let masterData = AppDataManager.shared.getMasterData(), masterData.data?.externalBrowserForceUrls?.count ?? 0 > 0 {
+                    if let masterData = AppDataManager.shared.getMasterData(), masterData.data?.externalUrls?.count ?? 0 > 0 {
                         AppDataManager.shared.saveAppData(masterData)
                     } else {
                         // 저장된 데이터 없을 시.

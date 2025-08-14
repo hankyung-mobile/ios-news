@@ -143,7 +143,13 @@ class SettingsViewController: UIViewController {
                     self?.showLoginView()
                     return
                 }
-                let validURL = URL(string: "https://markets-dev.hankyung.com/hkapp/my-stock")
+                
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "-dev"
+                }
+                
+                let validURL = URL(string: "https://markets\(customUrl).hankyung.com/hkapp/my-stock")
                 self?.openNewsDetail(url: validURL!, title: "마이증권")
                 
             })

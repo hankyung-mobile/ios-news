@@ -1,7 +1,27 @@
 {
   "images" : [
     {
-      "filename" : "unChecked.pdf",
+      "filename" : "icon_left.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "icon_left 1.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "icon_left (1).pdf",
       "idiom" : "universal"
     }
   ],

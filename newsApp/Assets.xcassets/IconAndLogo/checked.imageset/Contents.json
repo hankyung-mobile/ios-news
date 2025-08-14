@@ -1,7 +1,27 @@
 {
   "images" : [
     {
-      "filename" : "checked.pdf",
+      "filename" : "checkbox.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "checkbox 1.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "checkbox 2.pdf",
       "idiom" : "universal"
     }
   ],

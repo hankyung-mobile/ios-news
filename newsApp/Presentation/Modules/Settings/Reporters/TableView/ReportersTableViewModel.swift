@@ -17,6 +17,7 @@ class ReportersTableViewModel {
     private var isLoading = false
     private var hasMoreData = true
     private var baseParameters: [String: Any] = [:]
+    private let maxItemCount = 100
     
     // UI가 구독할 Observable들 - NewsArticle 직접 사용
     let items = BehaviorRelay<[NewsArticle]>(value: [])
@@ -54,16 +55,24 @@ class ReportersTableViewModel {
                     self?.isLoadingRelay.accept(false)
                     
                     guard let self = self else { return }
-                    let newArticles = response.data?.list
+                    let newArticles = response.data?.list ?? []
                     
-                    if ((newArticles?.isEmpty) == true) {
+                    if newArticles.isEmpty {
                         self.hasMoreData = false
                         self.items.accept([])
                         return
                     }
                     
+                    // ✅ 간단하게: 100개까지만 저장
+                    self.newsArticles = Array(newArticles.prefix(self.maxItemCount))
+                    
+                    // ✅ 간단하게: 100개 도달하면 hasMoreData = false
+                    if self.newsArticles.count >= self.maxItemCount {
+                        self.hasMoreData = false
+                    }
+                    
                     // 뉴스 데이터 저장 및 UI 업데이트
-                    self.newsArticles = newArticles ?? []
+                    self.newsArticles = newArticles
                     self.items.accept(self.newsArticles)
                 },
                 onError: { [weak self] error in
@@ -77,7 +86,9 @@ class ReportersTableViewModel {
     
     // 다음 페이지 로드
     func loadNextPage() {
-        guard !isLoading && hasMoreData else { return }
+        guard !isLoading && hasMoreData && newsArticles.count < maxItemCount else {
+            return
+        }
         
         currentPage += 1
         isLoading = true
@@ -92,10 +103,10 @@ class ReportersTableViewModel {
                     self?.isLoading = false
                     
                     guard let self = self else { return }
-                    let newArticles = response.data?.list
+                    let newArticles = response.data?.list ?? []
                     
                     // 서버에서 빈 배열이 오면 더 이상 데이터가 없음
-                    if ((newArticles?.isEmpty) == true) {
+                    if newArticles.isEmpty {
                         self.hasMoreData = false
                         print("📱 더 이상 불러올 데이터가 없습니다.")
                         return
@@ -103,23 +114,29 @@ class ReportersTableViewModel {
                     
                     // 중복 제거
                     let existingIDs = Set(self.newsArticles.map { $0.aid })
-                    let filteredNewArticles = newArticles?.filter { !existingIDs.contains($0.aid) }
+                    let filteredNewArticles = newArticles.filter { !existingIDs.contains($0.aid) }
                     
                     // 실제로 추가된 새 데이터가 없다면 hasMoreData = false
-                    if ((filteredNewArticles?.isEmpty) == true) {
+                    if filteredNewArticles.isEmpty {
                         self.hasMoreData = false
-                        print("📱 모든 데이터가 중복되어 더 이상 불러올 데이터가 없습니다.")
                         return
                     }
                     
-                    // 새로 받은 데이터가 기존 페이지보다 적으면 마지막 페이지일 가능성
-                    if newArticles?.count ?? 0 < 20 {  // 페이지당 20개씩 온다고 가정
-                        self.hasMoreData = false
-                        print("📱 마지막 페이지입니다.")
-                    }
+                    let remainingSlots = self.maxItemCount - self.newsArticles.count
+                    let articlesToAdd = Array(filteredNewArticles.prefix(remainingSlots))
                     
                     // 기존 뉴스에 추가
-                    self.newsArticles.append(contentsOf: filteredNewArticles ?? [])
+                    self.newsArticles.append(contentsOf: articlesToAdd)
+                    
+                    // ✅ 간단하게: 100개 도달하면 hasMoreData = false
+                    if self.newsArticles.count >= self.maxItemCount {
+                        self.hasMoreData = false
+                    }
+                    
+                    // 새로 받은 데이터가 기존 페이지보다 적으면 마지막 페이지일 가능성
+                    if newArticles.count < 20 {  // 페이지당 20개씩 온다고 가정
+                        self.hasMoreData = false
+                    }
                     
                     // UI 업데이트
                     self.items.accept(self.newsArticles)

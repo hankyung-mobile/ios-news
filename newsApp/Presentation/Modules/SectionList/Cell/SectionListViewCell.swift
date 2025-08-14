@@ -14,6 +14,7 @@ class SectionListViewCell: UITableViewCell {
     @IBOutlet weak var lbSubTitle: UILabel!
     @IBOutlet weak var lyImg: UIView!
     @IBOutlet weak var imgSection: UIImageView!
+    @IBOutlet weak var lyDivider: UIView!
     
     // 이미지 로딩용 프로퍼티 추가
     private var imageTask: URLSessionDataTask?

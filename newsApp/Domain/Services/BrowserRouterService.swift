@@ -19,9 +19,9 @@ enum BrowserType {
 
 // MARK: - Browser Configuration Model
 struct BrowserConfiguration {
-    let inappBrowserForceUrls: [String]
-    let inappBrowserAllowedUrls: [String]
-    let externalBrowserForceUrls: [String]
+    let multiUrls: [String]
+    let inappUrls: [String]
+    let externalUrls: [String]
     
     static let `default`: BrowserConfiguration = {
         return BrowserConfiguration.fromUserDefaults()
@@ -31,16 +31,16 @@ struct BrowserConfiguration {
     static func fromUserDefaults() -> BrowserConfiguration {
         if let masterData = AppDataManager.shared.getMasterData() {
             return BrowserConfiguration(
-                inappBrowserForceUrls: masterData.data?.inappBrowserForceUrls ?? [],
-                inappBrowserAllowedUrls: masterData.data?.inappBrowserAllowedUrls ?? [],
-                externalBrowserForceUrls: masterData.data?.externalBrowserForceUrls ?? []
+                multiUrls: masterData.data?.multiUrls ?? [],
+                inappUrls: masterData.data?.inappUrls ?? [],
+                externalUrls: masterData.data?.externalUrls ?? []
             )
         } else {
             // 마스터 데이터가 없을 때 기본값
             return BrowserConfiguration(
-                inappBrowserForceUrls: [],
-                inappBrowserAllowedUrls: [],
-                externalBrowserForceUrls: []
+                multiUrls: [],
+                inappUrls: [],
+                externalUrls: []
             )
         }
     }
@@ -74,40 +74,45 @@ class BrowserRouterService: BrowserRouterServiceProtocol {
     
     func determineBrowserType(for url: String) -> BrowserType {
         let lowercasedUrl = url.lowercased()
+        let isWebviewHankyung = lowercasedUrl.contains("webview.hankyung") ||
+        lowercasedUrl.contains("stg-webview.hankyung")
         
         print("🔍 Analyzing URL: \(url)")
         print("   Lowercased: \(lowercasedUrl)")
         
-        // 1. 강제 외부 브라우저 예외 처리 (우선순위 최고)
-        if configuration.externalBrowserForceUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
-            print("   ✅ Match: External browser force URL")
-            return .externalBrowser
-        }
-        
-        // 2. 한경 도메인 처리 (.hankyung 포함)
-        if isHankyungDomain(url: lowercasedUrl) {
-            print("   🏢 Hankyung domain detected")
-            
-            // 2-1. 강제 내부 브라우저 예외 처리 (한경 도메인 내에서)
-            if configuration.inappBrowserForceUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
-                print("   ✅ Match: Internal browser force URL (Hankyung)")
-                return .internalBrowser
-            }
-            
-            // 2-2. 기본값: 한경 도메인은 새창으로 처리
-            print("   ✅ Match: Hankyung domain -> New Window")
+        // 1. multiUrls 처리 (첫 번째 우선순위)
+        if configuration.multiUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
+            print("   ✅ Match: Multi URL -> New Window")
             return .newWindow
         }
         
-        // 4. 허용된 내부 브라우저 URL 처리 (한경 외 도메인)
-        if configuration.inappBrowserAllowedUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
-            print("   ✅ Match: Internal browser allowed URL")
+        // 2. inappUrls 처리 (두 번째 우선순위)
+        if configuration.inappUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
+            print("   ✅ Match: InApp URL -> Internal Browser")
             return .internalBrowser
         }
         
-        // 5. 기타 도메인: 외부 브라우저로 처리
-        print("   ✅ Default: External Browser")
-        return .externalBrowser
+        // 3. externalUrls 처리 (세 번째 우선순위)
+        if configuration.externalUrls.contains(where: { lowercasedUrl.contains($0.lowercased()) }) {
+            print("   ✅ Match: External URL -> External Browser")
+            return .externalBrowser
+        }
+        
+        // 4. 한경 도메인 특별 처리
+        // 4-1. webview.hankyung 포함 시 (stg- prefix 가능)
+        if isWebviewHankyung {
+            print("   ✅ Match: webview.hankyung domain -> New Window")
+            return .newWindow
+        }
+        
+        // 4-2. webview 없이 .hankyung만 포함 시
+        if lowercasedUrl.contains(".hankyung") && !isWebviewHankyung {
+            print("   ✅ Match: .hankyung domain (without webview) -> Internal Browser")
+            return .internalBrowser
+        }
+        // 5. Default 처리 (5개 모두 매칭되지 않을 경우)
+        print("   ⚠️ No match found -> Default: External Browser")
+        return .externalBrowser  // 기본값은 외부 브라우저로 설정 (필요시 변경 가능)
     }
 
     // MARK: - Helper Methods

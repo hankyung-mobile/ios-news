@@ -19,18 +19,16 @@ struct Master: Codable {
 // MARK: - App Info Data
 struct AppInfoData: Codable {
     let appVersion: AppVersion?
-    let webviewAllowedUrls: [String]?
-    let inappBrowserForceUrls: [String]?
-    let inappBrowserAllowedUrls: [String]?
-    let externalBrowserForceUrls: [String]?
+    let multiUrls: [String]?
+    let inappUrls: [String]?
+    let externalUrls: [String]?
     let notice: Notice?
     
     enum CodingKeys: String, CodingKey {
         case appVersion = "app-version"
-        case webviewAllowedUrls = "webview-allowed-urls"
-        case inappBrowserForceUrls = "inapp-browser-force-urls"
-        case inappBrowserAllowedUrls = "inapp-browser-allowed-urls"
-        case externalBrowserForceUrls = "external-browser-force-urls"
+        case multiUrls = "multi-urls"
+        case inappUrls = "inapp-urls"
+        case externalUrls = "external-urls"
         case notice
     }
 }

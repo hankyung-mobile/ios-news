@@ -33,19 +33,30 @@ class ReportersTableViewController: UIViewController {
     private var hasInitializedData = false
     private var currentReporterEmail: String?
     
+    // 커스텀 셀 식별자
+    private let headerCellIdentifier = "HeaderReportersTableViewCell"
+    private let footerCellIdentifier = "LastReportersTableViewCell"
+    private let newsCellIdentifier = "SectionListViewCell"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         bindViewModel()
         setupLoadingIndicator()
         
-        let nib = UINib(nibName: "SectionListViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "SectionListViewCell")
+        // 셀 등록
+        registerCells()
         
         // 초기 데이터 로드
         if let reporterData = reporterData {
             loadInitialData(with: reporterData)
         }
+    }
+    
+    private func registerCells() {
+        // 뉴스 셀 등록
+        let nib = UINib(nibName: "SectionListViewCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: newsCellIdentifier)
     }
     
     private func setupLoadingIndicator() {
@@ -164,33 +175,118 @@ class ReportersTableViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    // MARK: - Helper Methods for Custom Cells
+    
+    /// 실제 뉴스 데이터의 개수 (커스텀 셀 제외)
+    private var newsItemCount: Int {
+        return viewModel.itemCount
+    }
+    
+    /// 전체 셀 개수 (헤더 + 뉴스 + 푸터)
+    private var totalCellCount: Int {
+        let baseCount = newsItemCount
+        if baseCount == 0 {
+            return 0 // 데이터가 없으면 커스텀 셀도 보여주지 않음
+        }
+        return baseCount + 2 // 헤더(1) + 뉴스(n) + 푸터(1)
+    }
+    
+    /// 주어진 인덱스가 헤더 셀인지 확인
+    private func isHeaderCell(at index: Int) -> Bool {
+        return index == 0 && newsItemCount > 0
+    }
+    
+    /// 주어진 인덱스가 푸터 셀인지 확인
+    private func isFooterCell(at index: Int) -> Bool {
+        return index == totalCellCount - 1 && newsItemCount > 0
+    }
+    
+    /// 주어진 인덱스가 뉴스 셀인지 확인하고, 뉴스 데이터 인덱스 반환
+    private func newsItemIndex(for cellIndex: Int) -> Int? {
+        if newsItemCount == 0 { return nil }
+        
+        let newsIndex = cellIndex - 1 // 헤더 셀(1개) 제외
+        if newsIndex >= 0 && newsIndex < newsItemCount {
+            return newsIndex
+        }
+        return nil
+    }
 }
 
 // MARK: - UITableViewDataSource & Delegate
 extension ReportersTableViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.itemCount
+        return totalCellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let item = viewModel.item(at: indexPath.row) else {
-            return UITableViewCell()
+        let row = indexPath.row
+        let isLastCell = indexPath.row == newsItemCount
+        
+        // 헤더 셀
+        if isHeaderCell(at: row) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: headerCellIdentifier, for: indexPath)as! HeaderReportersTableViewCell
+            configureHeaderCell(cell)
+            return cell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SectionListViewCell", for: indexPath) as! SectionListViewCell
-        cell.configure(with: item)
+        // 푸터 셀
+        if isFooterCell(at: row) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: footerCellIdentifier, for: indexPath) as! LastReportersTableViewCell
+            return cell
+        }
         
+        // 뉴스 셀
+        if let newsIndex = newsItemIndex(for: row),
+           let item = viewModel.item(at: newsIndex) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! SectionListViewCell
+            cell.configure(with: item)
+            cell.lyDivider.isHidden = isLastCell
+            return cell
+        }
         
-        return cell
+        // 기본 셀 (에러 방지용)
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        // 뉴스 셀만 클릭 가능
-        if let item = viewModel.item(at: indexPath.row) {
+        let row = indexPath.row
+        
+        // 헤더, 푸터 셀은 터치 이벤트 무시
+        if isHeaderCell(at: row) || isFooterCell(at: row) {
+            return
+        }
+        
+        // 뉴스 셀 클릭만 처리
+        if let newsIndex = newsItemIndex(for: row),
+           let item = viewModel.item(at: newsIndex) {
             moveToDetailPage(article: item)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let row = indexPath.row
+        
+        // 뉴스 셀에서만 무한스크롤 체크
+        if let newsIndex = newsItemIndex(for: row) {
+            if viewModel.shouldLoadMore(at: newsIndex) {
+                viewModel.loadNextPage()
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // 뉴스 셀 높이
+        return UITableView.automaticDimension
+    }
+    
+    // MARK: - Custom Cell Configuration
+    
+    private func configureHeaderCell(_ cell: HeaderReportersTableViewCell) {
+        // 헤더 셀 설정
+        cell.lbHeader.text = "\(reporterData?.reporterName ?? "기자") 최신기사"
     }
     
     private func moveToDetailPage(article: NewsArticle) {
@@ -205,19 +301,4 @@ extension ReportersTableViewController: UITableViewDataSource, UITableViewDelega
         
         webNavigationDelegate?.openNewsDetail(url: validURL, title: nil)
     }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if viewModel.shouldLoadMore(at: indexPath.row) {
-            viewModel.loadNextPage()
-        }
-    }
-    
-    // 셀 높이 설정 (선택사항)
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let item = viewModel.item(at: indexPath.row) else {
-            return UITableView.automaticDimension
-        }
-        return UITableView.automaticDimension
-    }
-    
 }

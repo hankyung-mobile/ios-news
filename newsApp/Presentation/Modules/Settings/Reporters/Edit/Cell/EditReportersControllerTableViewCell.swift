@@ -57,7 +57,7 @@ class EditReportersControllerTableViewCell: UITableViewCell {
 //        // 선택 효과를 위한 설정
 //        layer.borderWidth = 2
 //        layer.borderColor = UIColor.clear.cgColor
-        imgReporter.layer.cornerRadius = 28
+        imgReporter.layer.cornerRadius = 24
         imgReporter.clipsToBounds = true
         imgReporter.contentMode = .scaleAspectFill
        

@@ -134,7 +134,7 @@ class NewsContentController: UIViewController, PagingTabViewDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.loadingIndicator.startAnimating()
             self?.pageViewController.view.isHidden = true
-            self?.titleImg?.isHidden = true
+//            self?.titleImg?.isHidden = true
         }
     }
     
@@ -398,9 +398,7 @@ class NewsContentController: UIViewController, PagingTabViewDelegate {
 //        titleImg.loadSVG(url: currentSlide.image ?? "", defaultImage: nil) {
 //            self.view.layoutIfNeeded()
 //        }
-        
-        let defaultImage = UIImage(named: "hkLogo")
-        titleImg.image = defaultImage
+
         return
         
     }

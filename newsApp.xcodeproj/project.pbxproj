@@ -125,6 +125,9 @@
 		69B80EE02E0E332400534F71 /* HeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B80EDF2E0E332400534F71 /* HeaderTableViewCell.swift */; };
 		69BD0DDF2E1CECC900F90444 /* ArticleScrapListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BD0DDE2E1CECC900F90444 /* ArticleScrapListViewCell.swift */; };
 		69C1B0742E45C47D009FE938 /* MenuBannerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C1B0732E45C47D009FE938 /* MenuBannerTableViewCell.swift */; };
+		69D0CFB02E4D9688007FF10B /* LastReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFAF2E4D9688007FF10B /* LastReportersTableViewCell.swift */; };
+		69D0CFB22E4DA40B007FF10B /* HeaderReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB12E4DA40B007FF10B /* HeaderReportersTableViewCell.swift */; };
+		69D0CFB42E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB32E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift */; };
 		69D1BA702E3B65F900623DE5 /* PagingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D1BA6F2E3B65F900623DE5 /* PagingTabViewController.swift */; };
 		69D1BA722E3C4F0A00623DE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */; };
 		69D1BA742E3C4F1100623DE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69D1BA732E3C4F1100623DE5 /* Game.storyboard */; };
@@ -413,6 +416,9 @@
 		69B80EDF2E0E332400534F71 /* HeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTableViewCell.swift; sourceTree = "<group>"; };
 		69BD0DDE2E1CECC900F90444 /* ArticleScrapListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleScrapListViewCell.swift; sourceTree = "<group>"; };
 		69C1B0732E45C47D009FE938 /* MenuBannerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBannerTableViewCell.swift; sourceTree = "<group>"; };
+		69D0CFAF2E4D9688007FF10B /* LastReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastReportersTableViewCell.swift; sourceTree = "<group>"; };
+		69D0CFB12E4DA40B007FF10B /* HeaderReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderReportersTableViewCell.swift; sourceTree = "<group>"; };
+		69D0CFB32E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditReportersTableViewCell.swift; sourceTree = "<group>"; };
 		69D1BA6F2E3B65F900623DE5 /* PagingTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingTabViewController.swift; sourceTree = "<group>"; };
 		69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		69D1BA732E3C4F1100623DE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
@@ -910,9 +916,9 @@
 		6986EFDD2E264D1100F12436 /* TableView */ = {
 			isa = PBXGroup;
 			children = (
+				69D0CFAE2E4D9655007FF10B /* Cell */,
 				699B45442E29DFA8005CB4D3 /* ReportersTableViewController.swift */,
 				699B45402E28F341005CB4D3 /* ReportersTableView.storyboard */,
-				699B45422E29DF4F005CB4D3 /* ReportersTableViewCell.swift */,
 				699B45462E2A252B005CB4D3 /* ReportersTableViewModel.swift */,
 			);
 			path = TableView;
@@ -933,6 +939,7 @@
 			isa = PBXGroup;
 			children = (
 				699B45522E2A3F28005CB4D3 /* EditReportersControllerTableViewCell.swift */,
+				69D0CFB32E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1036,6 +1043,16 @@
 			children = (
 				69BD0DDE2E1CECC900F90444 /* ArticleScrapListViewCell.swift */,
 				694812BE2E1FA985005C1780 /* HeaderArticleScrapListViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		69D0CFAE2E4D9655007FF10B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				699B45422E29DF4F005CB4D3 /* ReportersTableViewCell.swift */,
+				69D0CFAF2E4D9688007FF10B /* LastReportersTableViewCell.swift */,
+				69D0CFB12E4DA40B007FF10B /* HeaderReportersTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1607,6 +1624,7 @@
 			files = (
 				6986EFDF2E2785BC00F12436 /* ReportersCollectionViewCell.swift in Sources */,
 				69AB32B12E1647F10048A682 /* SectionListViewModel.swift in Sources */,
+				69D0CFB02E4D9688007FF10B /* LastReportersTableViewCell.swift in Sources */,
 				69D44B682DFC18C500A7254E /* Premium.swift in Sources */,
 				890CDCCE28615854008232B7 /* APIRequest.swift in Sources */,
 				69B80EDD2E0D3A8E00534F71 /* MenuPageViewModel.swift in Sources */,
@@ -1688,9 +1706,11 @@
 				69A5F8B82E385C64002D4DFD /* StockSearchTableViewCell.swift in Sources */,
 				89329B4624CAD72A00DAE429 /* NewsViewController.swift in Sources */,
 				69D44B5F2DF97A6600A7254E /* BrowserRouterService.swift in Sources */,
+				69D0CFB42E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift in Sources */,
 				89E7FD1B286A7C8D002CCD8D /* LogoutViewController.swift in Sources */,
 				69EEA33A2E3A06220006AEE7 /* SearchReporterManager.swift in Sources */,
 				696F55912E37378E0073EC13 /*  SearchLatestNewsViewModel.swift in Sources */,
+				69D0CFB22E4DA40B007FF10B /* HeaderReportersTableViewCell.swift in Sources */,
 				69AB32AB2E14F5C90048A682 /* MenuMarketViewModel.swift in Sources */,
 				69EEA3442E3B24DF0006AEE7 /* PushList.swift in Sources */,
 				69AB32B52E164B6D0048A682 /* SectionList.swift in Sources */,

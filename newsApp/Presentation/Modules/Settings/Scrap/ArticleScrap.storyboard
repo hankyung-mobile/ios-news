@@ -295,7 +295,7 @@
     </scenes>
     <resources>
         <image name="backArrow" width="44" height="44"/>
-        <image name="checked" width="26" height="22"/>
+        <image name="checked" width="24" height="24"/>
         <image name="scrapNotice" width="240" height="290"/>
         <namedColor name="#1A1A1A">
             <color red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

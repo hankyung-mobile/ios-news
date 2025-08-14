@@ -113,6 +113,7 @@
                 <outlet property="imgSection" destination="xre-WJ-1I5" id="kzZ-2y-NaE"/>
                 <outlet property="lbSubTitle" destination="QsO-QO-9he" id="cY7-8q-5Zm"/>
                 <outlet property="lbTitle" destination="rP4-7T-4xe" id="Ahe-r5-PeY"/>
+                <outlet property="lyDivider" destination="htx-lo-2xA" id="Cw9-8J-3cv"/>
                 <outlet property="lyImg" destination="aoL-sB-zu9" id="qZk-QR-w1T"/>
             </connections>
             <point key="canvasLocation" x="-798" y="-199"/>

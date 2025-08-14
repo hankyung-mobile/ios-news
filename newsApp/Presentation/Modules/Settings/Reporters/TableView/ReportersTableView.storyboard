@@ -22,8 +22,68 @@
                                 <rect key="frame" x="0.0" y="118" width="393" height="734"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LastReportersTableViewCell" id="qdr-kO-52C" customClass="LastReportersTableViewCell" customModule="newsApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="68"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qdr-kO-52C" id="TN5-Rr-Kqf">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="68"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="J4W-ic-vuv">
+                                                    <rect key="frame" x="0.0" y="24" width="393" height="20"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="마지막 페이지입니다." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="npB-U4-kd8">
+                                                            <rect key="frame" x="0.0" y="0.0" width="393" height="20"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="8vF-IK-dMW"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                            <color key="textColor" name="neutral35*"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="J4W-ic-vuv" secondAttribute="bottom" constant="24" id="4ix-Fd-MDh"/>
+                                                <constraint firstItem="J4W-ic-vuv" firstAttribute="leading" secondItem="TN5-Rr-Kqf" secondAttribute="leading" id="H7w-NF-hG1"/>
+                                                <constraint firstItem="J4W-ic-vuv" firstAttribute="top" secondItem="TN5-Rr-Kqf" secondAttribute="top" constant="24" id="IJn-T5-3qN"/>
+                                                <constraint firstAttribute="trailing" secondItem="J4W-ic-vuv" secondAttribute="trailing" id="M6c-F0-Lzs"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="HeaderReportersTableViewCell" id="ne4-is-ZXB" customClass="HeaderReportersTableViewCell" customModule="newsApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="118" width="393" height="16"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ne4-is-ZXB" id="u9W-LH-vkS">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="16"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="d3R-8u-bHO">
+                                                    <rect key="frame" x="20" y="16" width="353" height="0.0"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mwq-6V-xT8">
+                                                            <rect key="frame" x="0.0" y="0.0" width="353" height="0.0"/>
+                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                            <color key="textColor" name="#007CC1"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="d3R-8u-bHO" firstAttribute="leading" secondItem="u9W-LH-vkS" secondAttribute="leading" constant="20" id="Keu-j7-umx"/>
+                                                <constraint firstItem="d3R-8u-bHO" firstAttribute="top" secondItem="u9W-LH-vkS" secondAttribute="top" constant="16" id="hM7-DI-RXK"/>
+                                                <constraint firstAttribute="trailing" secondItem="d3R-8u-bHO" secondAttribute="trailing" constant="20" id="rgE-7w-U9K"/>
+                                                <constraint firstAttribute="bottom" secondItem="d3R-8u-bHO" secondAttribute="bottom" id="w7i-b4-XAe"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lbHeader" destination="mwq-6V-xT8" id="Nb3-lm-BqO"/>
+                                        </connections>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ReportersTableViewCell" id="Hi9-eZ-odo" customClass="ReportersTableViewCell" customModule="newsApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="294.66665649414062"/>
+                                        <rect key="frame" x="0.0" y="134" width="393" height="294.66665649414062"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Hi9-eZ-odo" id="qiN-Zn-1g8">
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="294.66665649414062"/>
@@ -172,8 +232,14 @@
     </scenes>
     <resources>
         <image name="noDataReporters" width="362" height="432"/>
+        <namedColor name="#007CC1">
+            <color red="0.0" green="0.48627450980392156" blue="0.75686274509803919" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="#E5E5E5">
             <color red="0.89803921568627454" green="0.89803921568627454" blue="0.89803921568627454" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="neutral35*">
+            <color red="0.34901960784313724" green="0.34901960784313724" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
