@@ -179,12 +179,21 @@ class MarketViewController: UIViewController {
       
       private func moveToPage(at index: Int) {
           guard index >= 0 && index < allWebControllers.count else { return }
+          guard index != currentIndex else {       NotificationCenter.default.post(
+            name: .scrollToTop,
+            object: nil,
+            userInfo: nil)
+              return
+          } // 같은 페이지면 무시
           
           let targetVC = allWebControllers[index]
-          let currentIndex = currentIndex
           let direction: UIPageViewController.NavigationDirection = index > currentIndex ? .forward : .reverse
           
-          pageViewController.setViewControllers([targetVC], direction: direction, animated: true)
+          pageViewController.setViewControllers([targetVC], direction: direction, animated: true) { [weak self] completed in
+              if completed {
+                  self?.currentIndex = index
+              }
+          }
           updateTitleImage(for: index)
       }
     

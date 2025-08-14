@@ -16,4 +16,5 @@ extension Notification.Name {
     static let moveToMarketPage = Notification.Name("moveToMarketPage")
     static let reporterDeleted = Notification.Name("reporterDeleted")
     static let closeSearchView = Notification.Name("closeSearchView")
+    static let scrollToTop = Notification.Name("scrollToTop")
 }

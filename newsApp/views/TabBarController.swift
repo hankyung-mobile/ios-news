@@ -28,6 +28,12 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         setupTabBarAppearance()
         
         //        self.tabBar.showBadgOn(index: 2)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(scrollToTop),
+            name: .scrollToTop,
+            object: nil
+        )
     }
     
     private func setupTabs() {
@@ -143,31 +149,15 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 //            tabBar.layer.shadowRadius = 4
         }
     
-    private func scrollToTopInViewController(_ vc: UIViewController?) {
+    private func moveToMainViewController(_ vc: UIViewController?) {
         guard let vc = vc else { return }
-        
-        // 직접 ScrollableViewController인지 확인
-//        if let scrollable = vc as? ScrollableViewController {
-//            scrollable.scrollToTop()
-//            return
-//        }
-//        
-//        // 자식들 중에서 찾기
-//        for child in vc.children {
-//            if let pageVC = child as? UIPageViewController {
-//                if let currentPage = pageVC.viewControllers?.first as? ScrollableViewController {
-//                    currentPage.scrollToTop()
-//                    return
-//                }
-//            }
-//        }
         
         var name: Notification.Name = .moveToNewsPage
         if self.selectedIndex == 1 {
             name = .moveToPremiumPage
         }
         
-        if self.selectedIndex == 2 {
+        if self.selectedIndex == 3 {
             name = .moveToMarketPage
         }
         
@@ -178,11 +168,41 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         )
         
         // 직접 ScrollableViewController인지 확인
+//        if let scrollable = vc as? ScrollableViewController {
+//            scrollable.scrollToTop()
+//            return
+//        }
+//
+//        // 자식들 중에서 찾기
+//        for child in vc.children {
+//            if let pageVC = child as? UIPageViewController {
+//                if let currentPage = pageVC.viewControllers?.first as? ScrollableViewController {
+//                    currentPage.scrollToTop()
+//                    return
+//                }
+//            }
+//        }
+    }
+    
+    @objc private func scrollToTop(_ notification: Notification) {
+        // 현재 선택된 탭의 ViewController 가져오기
+        guard let selectedVC = selectedViewController else { return }
+        
+        var targetVC: UIViewController? = selectedVC
+        
+        // NavigationController라면 topViewController 가져오기
+        if let navController = selectedVC as? UINavigationController {
+            targetVC = navController.topViewController
+        }
+        
+        guard let vc = targetVC else { return }
+        
+        // 직접 ScrollableViewController인지 확인
         if let scrollable = vc as? ScrollableViewController {
             scrollable.scrollToTop()
             return
         }
-
+        
         // 자식들 중에서 찾기
         for child in vc.children {
             if let pageVC = child as? UIPageViewController {
@@ -215,7 +235,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
             }
             
             return url
-        case 2:
+        case 3:
             let slides = AppDataManager.shared.getMarketSlideData()
             let mainSlide = slides.first { $0.isMain ?? true }
             
@@ -312,7 +332,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
                     navController.popToRootViewController(animated: true)
                 } else {
                     // 이미 루트 상태면 스크롤 상단으로 이동
-                    scrollToTopInViewController(navController.topViewController)
+                    moveToMainViewController(navController.topViewController)
                 }
             }
         }

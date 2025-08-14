@@ -206,7 +206,12 @@ class NewsContentController: UIViewController, PagingTabViewDelegate {
       private func moveToPage(at index: Int) {
           guard !isPageChanging else { return }
           guard index >= 0 && index < allWebControllers.count else { return }
-          guard index != currentIndex else { return } // 같은 페이지면 무시
+          guard index != currentIndex else {       NotificationCenter.default.post(
+            name: .scrollToTop,
+            object: nil,
+            userInfo: nil)
+              return
+          } // 같은 페이지면 무시
           
           isPageChanging = true
           
