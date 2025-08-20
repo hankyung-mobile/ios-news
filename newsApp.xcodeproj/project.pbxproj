@@ -128,6 +128,9 @@
 		69D0CFB02E4D9688007FF10B /* LastReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFAF2E4D9688007FF10B /* LastReportersTableViewCell.swift */; };
 		69D0CFB22E4DA40B007FF10B /* HeaderReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB12E4DA40B007FF10B /* HeaderReportersTableViewCell.swift */; };
 		69D0CFB42E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB32E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift */; };
+		69D0CFB62E53119F007FF10B /* TermSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB52E53119F007FF10B /* TermSearchManager.swift */; };
+		69D0CFB82E531584007FF10B /* SearchLastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69D0CFB72E531584007FF10B /* SearchLastTableViewCell.xib */; };
+		69D0CFBA2E53168C007FF10B /* SearchLastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D0CFB92E53168C007FF10B /* SearchLastTableViewCell.swift */; };
 		69D1BA702E3B65F900623DE5 /* PagingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D1BA6F2E3B65F900623DE5 /* PagingTabViewController.swift */; };
 		69D1BA722E3C4F0A00623DE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */; };
 		69D1BA742E3C4F1100623DE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69D1BA732E3C4F1100623DE5 /* Game.storyboard */; };
@@ -419,6 +422,9 @@
 		69D0CFAF2E4D9688007FF10B /* LastReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastReportersTableViewCell.swift; sourceTree = "<group>"; };
 		69D0CFB12E4DA40B007FF10B /* HeaderReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderReportersTableViewCell.swift; sourceTree = "<group>"; };
 		69D0CFB32E4DB09E007FF10B /* HeaderEditReportersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEditReportersTableViewCell.swift; sourceTree = "<group>"; };
+		69D0CFB52E53119F007FF10B /* TermSearchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermSearchManager.swift; sourceTree = "<group>"; };
+		69D0CFB72E531584007FF10B /* SearchLastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchLastTableViewCell.xib; sourceTree = "<group>"; };
+		69D0CFB92E53168C007FF10B /* SearchLastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLastTableViewCell.swift; sourceTree = "<group>"; };
 		69D1BA6F2E3B65F900623DE5 /* PagingTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingTabViewController.swift; sourceTree = "<group>"; };
 		69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		69D1BA732E3C4F1100623DE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
@@ -617,7 +623,6 @@
 		692ED5C62E1679F3009E48D8 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				692ED5C72E167A0E009E48D8 /* SectionListViewCell.swift */,
 				692ED5C92E17AFA1009E48D8 /* BannerViewCell.swift */,
 			);
 			path = Cell;
@@ -1090,7 +1095,10 @@
 		69EC47582E432B1200A5B7AB /* XIB */ = {
 			isa = PBXGroup;
 			children = (
+				692ED5C72E167A0E009E48D8 /* SectionListViewCell.swift */,
 				69EC47592E432BBE00A5B7AB /* SectionListViewCell.xib */,
+				69D0CFB92E53168C007FF10B /* SearchLastTableViewCell.swift */,
+				69D0CFB72E531584007FF10B /* SearchLastTableViewCell.xib */,
 			);
 			path = XIB;
 			sourceTree = "<group>";
@@ -1102,6 +1110,7 @@
 				69EEA31E2E38B3230006AEE7 /* Term.storyboard */,
 				69EEA3222E38B3570006AEE7 /* TermSearchTableViewCell.swift */,
 				69EEA3242E38B3630006AEE7 /* TermSearchViewModel.swift */,
+				69D0CFB52E53119F007FF10B /* TermSearchManager.swift */,
 				69EEA32A2E38C3CB0006AEE7 /* TermDetail */,
 			);
 			path = Term;
@@ -1540,6 +1549,7 @@
 				4B8C949E2AF856EF00D6ADE3 /* sns_x@3x.png in Resources */,
 				89C9B11B2487226E00E2F64C /* ad_close.png in Resources */,
 				89A1B5A924FF8334005EA4E0 /* btn_refresh@4x.png in Resources */,
+				69D0CFB82E531584007FF10B /* SearchLastTableViewCell.xib in Resources */,
 				692ED5D02E1BAB6D009E48D8 /* ArticleScrap.storyboard in Resources */,
 				6986EFDA2E262CA800F12436 /* Reporters.storyboard in Resources */,
 				69479DF52E0BD781006E9B1A /* Menu.storyboard in Resources */,
@@ -1690,9 +1700,11 @@
 				69A5F8A72E376C38002D4DFD /* AdMobViewController.swift in Sources */,
 				89C2D2F02508C84900BEE76E /* NewsArticlViewViewController.swift in Sources */,
 				696E3F512DDC4910007A916E /* MainTabBarCoordinator.swift in Sources */,
+				69D0CFBA2E53168C007FF10B /* SearchLastTableViewCell.swift in Sources */,
 				696F55862E337AF10073EC13 /* SearchReportersControllerTableViewCell.swift in Sources */,
 				69EEA31C2E389DC50006AEE7 /* ReporterSearch.swift in Sources */,
 				69EEA3342E39ED5B0006AEE7 /* HeaderLatestNewsTableViewCell.swift in Sources */,
+				69D0CFB62E53119F007FF10B /* TermSearchManager.swift in Sources */,
 				696F55892E3384240073EC13 /* SearchLatestNewsViewController.swift in Sources */,
 				696E3F3A2DDC4373007A916E /* APIRouter.swift in Sources */,
 				696E3F492DDC4717007A916E /* LoadingView.swift in Sources */,

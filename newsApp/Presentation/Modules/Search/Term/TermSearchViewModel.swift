@@ -15,9 +15,11 @@ class TermSearchViewModel {
     private let disposeBag = DisposeBag()
     private var currentPage = 1
     private var isLoading = false
-    private var hasMoreData = true
+    private(set) var hasMoreData = true
     private var baseParameters: [String: Any] = [:]
     private var currentQuery: String = ""
+    
+    private let maxItemCount = 100
     
     // UI가 구독할 Observable들
     let items = BehaviorRelay<[TermItem]>(value: [])
@@ -75,7 +77,9 @@ class TermSearchViewModel {
     
     // 다음 페이지 로드
     func loadNextPage() {
-        guard !isLoading && hasMoreData && !currentQuery.isEmpty else { return }
+        guard !isLoading && hasMoreData && !currentQuery.isEmpty && searchResults.count < maxItemCount else {
+            return
+        }
         
         print("📰 다음 페이지 로드: \(currentPage + 1)")
         
@@ -124,8 +128,12 @@ class TermSearchViewModel {
         }
         
         if isFirstPage {
-            // 첫 페이지: 기존 데이터 교체
-            searchResults = newResults ?? []
+            // ✅ 간단하게: 100개까지만 저장
+            searchResults = Array((newResults ?? []).prefix(maxItemCount))
+            
+            if searchResults.count >= maxItemCount {
+                hasMoreData = false
+            }
             print("📰 첫 페이지 로드 완료: \(String(describing: newResults?.count))개")
         } else {
             // 추가 페이지: 중복 제거 후 추가
@@ -138,8 +146,16 @@ class TermSearchViewModel {
                 return
             }
             
-            searchResults.append(contentsOf: filteredResults ?? [])
-            print("📰 페이지 \(currentPage) 로드 완료: +\(String(describing: filteredResults?.count))개, 총 \(searchResults.count)개")
+            let remainingSlots = maxItemCount - searchResults.count
+            let resultsToAdd = Array((filteredResults ?? []).prefix(remainingSlots))
+            
+            searchResults.append(contentsOf: resultsToAdd)
+            
+            if searchResults.count >= maxItemCount {
+                hasMoreData = false
+            }
+            
+            print("📰 페이지 \(currentPage) 로드 완료: +\(resultsToAdd.count)개, 총 \(searchResults.count)개")
         }
         
         // 마지막 페이지 체크
@@ -215,6 +231,23 @@ class TermSearchViewModel {
     
     var currentSearchQuery: String {
         return currentQuery
+    }
+    
+    // 아이템 직접 설정 (최근 본 뉴스용)
+    func setItems(_ items: [TermItem]) {
+        // ✅ 수정: setItems에서도 10개 제한 적용
+        let limitedItems = Array(items.prefix(10))
+        searchResults = limitedItems
+        self.items.accept(limitedItems)
+        isLoadingRelay.accept(false)
+        print("📰 최근 본 뉴스 설정: \(limitedItems.count)개")
+    }
+    
+    // 아이템 클리어
+    func clearItems() {
+        searchResults = []
+        items.accept([])
+        isLoadingRelay.accept(false)
     }
     
     // 디버깅을 위한 현재 상태 출력

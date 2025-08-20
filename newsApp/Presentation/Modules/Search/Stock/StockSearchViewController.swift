@@ -166,7 +166,7 @@ class StockSearchViewController: UIViewController, SearchContentViewController {
     
     private func openNewsDetail(searchResult: StockItem) {
         guard let url = URL(string: searchResult.appUrl ?? "") else {
-            print("📰 유효하지 않은 URL: \(String(describing: searchResult.url))")
+            print("📰 유효하지 않은 URL: \(String(describing: searchResult.appUrl))")
             return
         }
         // 최근 본 뉴스에 저장

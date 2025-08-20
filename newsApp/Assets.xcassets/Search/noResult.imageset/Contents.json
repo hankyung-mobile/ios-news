@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "noResult.pdf",
+      "filename" : "text-area.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "noResult 1.pdf",
+      "filename" : "text-area 1.pdf",
       "idiom" : "universal"
     },
     {
@@ -21,7 +21,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "noResultDark.pdf",
+      "filename" : "text-area 2.pdf",
       "idiom" : "universal"
     }
   ],

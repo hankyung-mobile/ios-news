@@ -15,7 +15,7 @@ class AiSearchViewModel {
     private let disposeBag = DisposeBag()
     private var currentPage = 1
     private var isLoading = false
-    private var hasMoreData = true
+    private(set) var hasMoreData = true
     private var baseParameters: [String: Any] = [:]
     private var currentQuery: String = ""
     

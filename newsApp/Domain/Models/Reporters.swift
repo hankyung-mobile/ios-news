@@ -29,6 +29,7 @@ struct Reporter: Codable, Identifiable {
     let photo: String?
     let regDate: String
     let readDate: String?
+    let isNew: Bool?
 
     // Identifiable 프로토콜을 위한 id 프로퍼티
     var id: Int? { no }
@@ -42,5 +43,6 @@ struct Reporter: Codable, Identifiable {
         case photo
         case regDate = "reg_date"
         case readDate = "read_date"
+        case isNew = "is_new"
     }
 }

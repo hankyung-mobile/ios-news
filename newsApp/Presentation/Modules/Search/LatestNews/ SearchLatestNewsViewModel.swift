@@ -15,7 +15,7 @@ class SearchLatestNewsViewModel {
     private let disposeBag = DisposeBag()
     private var currentPage = 1
     private var isLoading = false
-    private var hasMoreData = true
+    private(set) var hasMoreData = true
     private var baseParameters: [String: Any] = [:]
     private var currentQuery: String = ""
     
@@ -39,6 +39,7 @@ class SearchLatestNewsViewModel {
         // 검색 파라미터 설정
         baseParameters = [
             "keyword": query,
+            "mediaid": "0A,0B,0C,0D,0J,0L,0O,0P,0Q,AA,AB,AM,ZJ,ZK"
         ]
         
         loadFirstPage()

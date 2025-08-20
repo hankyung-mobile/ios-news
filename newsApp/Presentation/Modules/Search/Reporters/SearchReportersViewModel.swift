@@ -235,6 +235,24 @@ class SearchReportersViewModel {
         return currentQuery
     }
     
+    
+    // 아이템 직접 설정 (최근 본 뉴스용)
+    func setItems(_ items: [ReporterItem]) {
+        // ✅ 수정: setItems에서도 10개 제한 적용
+        let limitedItems = Array(items.prefix(10))
+        searchResults = limitedItems
+        self.items.accept(limitedItems)
+        isLoadingRelay.accept(false)
+        print("📰 최근 본 뉴스 설정: \(limitedItems.count)개")
+    }
+    
+    // 아이템 클리어
+    func clearItems() {
+        searchResults = []
+        items.accept([])
+        isLoadingRelay.accept(false)
+    }
+    
     // 디버깅을 위한 현재 상태 출력
     func printCurrentState() {
         print("   - currentQuery: '\(currentQuery)'")

@@ -78,7 +78,7 @@
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="71w-lX-g5u">
                                                             <rect key="frame" x="0.0" y="139" width="353" height="1"/>
-                                                            <color key="backgroundColor" name="#E5E5E5"/>
+                                                            <color key="backgroundColor" name="neutral80*"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="1" id="diM-b4-rP2"/>
                                                             </constraints>
@@ -220,9 +220,6 @@
         <image name="pleasePut" width="362" height="610"/>
         <namedColor name="#595959">
             <color red="0.34901960784313724" green="0.34901960784313724" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="#E5E5E5">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.89803921568627454" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="neutral80*">
             <color red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

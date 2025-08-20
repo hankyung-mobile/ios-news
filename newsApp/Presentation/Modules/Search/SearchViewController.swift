@@ -255,8 +255,7 @@ class SearchViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // 탭 변경 시 자동 검색 기능
     private func performAutoSearchOnTabChange(for index: Int) {
-        guard let searchText = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !searchText.isEmpty else {
+        guard let searchText = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             print("탭 변경 검색어 없음")
             return
         }

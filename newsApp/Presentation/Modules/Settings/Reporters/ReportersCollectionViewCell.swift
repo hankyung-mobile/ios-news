@@ -87,11 +87,13 @@ class ReportersCollectionViewCell: UICollectionViewCell {
                 
                 // 스케일 효과 제거하고 cornerRadius만 조정
                 self.lyReporterAvatar.layer.cornerRadius = 28
+                self.lbName.font = UIFont.boldSystemFont(ofSize: 13)
                 
             } else {
                 self.lyReporterAvatar.layer.borderWidth = 0
                 self.lyReporterAvatar.layer.borderColor = UIColor.clear.cgColor
                 self.lyReporterAvatar.layer.cornerRadius = 28 // 원래 크기
+                self.lbName.font = UIFont.systemFont(ofSize: 13)
             }
         }
     }

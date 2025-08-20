@@ -39,7 +39,7 @@ class SearchReportersController: UIViewController, SearchContentViewController {
         setupTableView()
         setupLoadingIndicator()
         bindViewModel()
-        pleasePutView.isHidden = !currentSearchQuery.isEmpty
+        showRecentNews()
     }
     
     private func setupLoadingIndicator() {
@@ -63,6 +63,7 @@ class SearchReportersController: UIViewController, SearchContentViewController {
         tableView.dataSource = self
 
         tableView.refreshControl = refreshControl
+        tableView.keyboardDismissMode = .onDrag
         
         // 리프레시 컨트롤
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
@@ -109,7 +110,14 @@ class SearchReportersController: UIViewController, SearchContentViewController {
     
     // MARK: - Actions
     @objc private func refresh() {
-        viewModel.refresh()
+        if isShowingRecentNews {
+            // 최근 본 뉴스 갱신
+            showRecentNews()
+            refreshControl.endRefreshing()
+        } else {
+            // 일반 검색 결과 새로고침
+            viewModel.refresh()
+        }
     }
     
     // MARK: - SearchContentViewController Protocol
@@ -117,12 +125,35 @@ class SearchReportersController: UIViewController, SearchContentViewController {
         currentSearchQuery = query
         print("📰 SearchLatestNewsViewController 검색: '\(query)'")
         if !query.isEmpty {
+            isShowingRecentNews = false // 검색 시 플래그 해제
             self.pleasePutView.isHidden = true
+            viewModel.performSearch(query: query)
         } else if query.isEmpty {
-            self.pleasePutView.isHidden = false
-            return
+            showRecentNews()
         }
-        viewModel.performSearch(query: query)
+    }
+    
+    private func showRecentNews() {
+        
+        isShowingRecentNews = true // 플래그 설정
+        let recentNewsList = SearchReporterManager.shared.getRecentNewsList()
+        
+        if recentNewsList.isEmpty {
+            // 최근 본 뉴스가 없을 때
+            viewModel.clearItems()
+            
+            // 직접 UI 업데이트 (bindViewModel 우회)
+            DispatchQueue.main.async { [weak self] in
+                self?.pleasePutView.isHidden = false
+                self?.noDataView.isHidden = true
+                self?.tableView.reloadData()
+            }
+        } else {
+            // 최근 본 뉴스가 있으면 테이블뷰에 표시
+            self.pleasePutView.isHidden = true
+            self.noDataView.isHidden = true
+            viewModel.setItems(recentNewsList) // ViewModel에 직접 설정
+        }
     }
     
     // MARK: - Helper Methods
@@ -137,6 +168,10 @@ class SearchReportersController: UIViewController, SearchContentViewController {
             print("📰 유효하지 않은 URL: \(String(describing: searchResult.url))")
             return
         }
+        
+        // 최근 본 뉴스에 저장
+        SearchReporterManager.shared.saveRecentNews(searchResult)
+        
         webNavigationDelegate?.openNewsDetail(url: url, title: nil)
     }
 }
@@ -144,11 +179,22 @@ class SearchReportersController: UIViewController, SearchContentViewController {
 // MARK: - TableView DataSource & Delegate
 extension SearchReportersController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isShowingRecentNews && viewModel.itemCount > 0 {
+             return viewModel.itemCount + 1  // 헤더용 셀 1개 추가
+         }
         return viewModel.itemCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let searchResult = viewModel.item(at: indexPath.row) else {
+        if isShowingRecentNews && indexPath.row == 0 {
+            // 첫 번째 셀을 헤더로 사용
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HeaderLatestNewsTableViewCell", for: indexPath) as! HeaderLatestNewsTableViewCell
+            return cell
+        }
+        
+        // 일반 셀 (인덱스 조정 필요)
+        let adjustedIndex = isShowingRecentNews ? indexPath.row - 1 : indexPath.row
+        guard let searchResult = viewModel.item(at: adjustedIndex) else {
             return UITableViewCell()
         }
         
@@ -160,11 +206,16 @@ extension SearchReportersController: UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let searchResult = viewModel.item(at: indexPath.row) else { return }
+        let adjustedIndex = isShowingRecentNews ? indexPath.row - 1 : indexPath.row
+        guard let searchResult = viewModel.item(at: adjustedIndex) else { return }
         openNewsDetail(searchResult: searchResult)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // 최근 본 뉴스를 표시 중이면 무한스크롤 비활성화
+        if isShowingRecentNews {
+            return
+        }
         // 무한스크롤 체크
         if viewModel.shouldLoadMore(at: indexPath.row) {
             viewModel.loadNextPage()
