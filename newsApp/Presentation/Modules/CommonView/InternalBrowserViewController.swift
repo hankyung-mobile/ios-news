@@ -44,7 +44,7 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "xmark", withConfiguration: config)
         button.setImage(image, for: .normal)
-        button.tintColor = .systemBlue
+        button.tintColor = .label
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -53,8 +53,8 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
     // 새로고침 버튼 (오른쪽)
     private lazy var refreshButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
-        button.tintColor = .systemBlue
+        button.setImage(UIImage(named: "internal_refresh"), for: .normal)
+        button.tintColor = .label
         button.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -87,24 +87,26 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
-        button.tintColor = .systemBlue
+        button.setImage(UIImage(named: "internal_back"), for: .normal)
+        button.tintColor = .label
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private lazy var forwardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "chevron.forward"), for: .normal)
-        button.tintColor = .systemBlue
+        button.setImage(UIImage(named: "internal_forward"), for: .normal)
+        button.tintColor = .label
         button.addTarget(self, action: #selector(forwardButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private lazy var bottomShareButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
-        button.tintColor = .systemBlue
+        button.setImage(UIImage(named: "internal_refresh"), for: .normal)
+        button.tintColor = .label
         button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -195,11 +197,11 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
         
         
         // 하단 툴바 구성 (3개 버튼만)
-        bottomToolbar.addSubview(bottomButtonsStack)
+//        bottomToolbar.addSubview(bottomButtonsStack)
         
-        bottomButtonsStack.addArrangedSubview(backButton)
-        bottomButtonsStack.addArrangedSubview(forwardButton)
-        bottomButtonsStack.addArrangedSubview(refreshButton)
+        bottomToolbar.addSubview(backButton)
+        bottomToolbar.addSubview(forwardButton)
+        bottomToolbar.addSubview(refreshButton)
         
         // 당겨서 새로고침
 //        webView.scrollView.refreshControl = UIRefreshControl()
@@ -249,16 +251,29 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
             bottomToolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bottomToolbar.heightAnchor.constraint(equalToConstant: 44),
             
-            // 상단 바 내부 요소들 - 균등 배치
+            // 상단 바 내부 요소들
             doneButton.leadingAnchor.constraint(equalTo: safariTopBar.leadingAnchor, constant: 20),
             doneButton.centerYAnchor.constraint(equalTo: safariTopBar.centerYAnchor),
             doneButton.widthAnchor.constraint(equalToConstant: 24),
             
-            // 하단 버튼 스택
-            bottomButtonsStack.leadingAnchor.constraint(equalTo: bottomToolbar.leadingAnchor, constant: 20),
-            bottomButtonsStack.trailingAnchor.constraint(equalTo: bottomToolbar.trailingAnchor, constant: -20),
-            bottomButtonsStack.centerYAnchor.constraint(equalTo: bottomToolbar.centerYAnchor),
-            bottomButtonsStack.heightAnchor.constraint(equalToConstant: 30)
+            // 🔧 하단 버튼들 constraint로 직접 배치 (균등 분할)
+            // 백 버튼 - 왼쪽
+            backButton.leadingAnchor.constraint(equalTo: bottomToolbar.leadingAnchor, constant: 10),
+            backButton.topAnchor.constraint(equalTo: bottomToolbar.topAnchor, constant: 5), // 상단에 딱 붙임
+            backButton.widthAnchor.constraint(equalToConstant: 44),
+            backButton.heightAnchor.constraint(equalToConstant: 44),
+
+            // 포워드 버튼
+            forwardButton.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 16),
+            forwardButton.topAnchor.constraint(equalTo: bottomToolbar.topAnchor, constant: 5), // 상단에 딱 붙임
+            forwardButton.widthAnchor.constraint(equalToConstant: 44),
+            forwardButton.heightAnchor.constraint(equalToConstant: 44),
+
+            // 새로고침 버튼
+            refreshButton.trailingAnchor.constraint(equalTo: bottomToolbar.trailingAnchor, constant: -10),
+            refreshButton.topAnchor.constraint(equalTo: bottomToolbar.topAnchor, constant: 5), // 상단에 딱 붙임
+            refreshButton.widthAnchor.constraint(equalToConstant: 44),
+            refreshButton.heightAnchor.constraint(equalToConstant: 44),
         ])
     }
     
@@ -323,8 +338,8 @@ class InternalBrowserViewController: UIViewController, WKUIDelegate {
         backButton.isEnabled = webView.canGoBack
         forwardButton.isEnabled = webView.canGoForward
         
-        backButton.tintColor = webView.canGoBack ? .systemBlue : .systemGray3
-        forwardButton.tintColor = webView.canGoForward ? .systemBlue : .systemGray3
+        backButton.tintColor = webView.canGoBack ? .label : .systemGray3
+        forwardButton.tintColor = webView.canGoForward ? .label : .systemGray3
     }
     
     // MARK: - Actions

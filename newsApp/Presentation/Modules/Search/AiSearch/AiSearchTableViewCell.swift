@@ -64,7 +64,7 @@ class AiSearchTableViewCell: UITableViewCell {
     
     func configure(with item: AiSearchArticle) {
         lbTitle.text = item.title
-        lbSubTitle.text = item.pubdate
+        lbSubTitle.text = item.pubdate?.toDisplayFormat
         
 //        // 회원전용 기사
 //        if item.payment == "A" {

@@ -63,7 +63,7 @@ class SearchLatestNewsTableViewCell: UITableViewCell {
     
     func configure(with item: SearchResult) {
         lbTitle.text = item.title
-        lbSubTitle.text = item.pubDate
+        lbSubTitle.text = item.pubDate?.toDisplayFormat
         
         // 회원전용 기사
         if item.payment == "A" {

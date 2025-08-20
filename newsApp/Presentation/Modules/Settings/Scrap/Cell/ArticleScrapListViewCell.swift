@@ -68,7 +68,7 @@ class ArticleScrapListViewCell: UITableViewCell {
         // 기본 데이터 설정
         lbTitle.text = item.title
 //        lbPubDate.text = item.pub_date
-        lbScrapDate.text = item.scrap_date
+        lbScrapDate.text = item.scrap_date?.toDisplayFormat
         
         let fontSize = UIFont.preferredFont(forTextStyle: .caption1).pointSize
         let boldFont = UIFont.boldSystemFont(ofSize: fontSize)

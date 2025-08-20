@@ -34,8 +34,8 @@ class TermSearchTableViewCell: UITableViewCell {
     }
     
     func configure(with item: TermItem) {
-        lbTitle.text = item.word
-        lbSubTitle.text = item.content
+        lbTitle.text = item.word ?? ""
+        lbSubTitle.text = item.content ?? ""
     }
 
 }

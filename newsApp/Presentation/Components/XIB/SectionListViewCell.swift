@@ -195,7 +195,7 @@ class SectionListViewCell: UITableViewCell {
     
     func configure(with item: NewsArticle) {
         lbTitle.text = item.title
-        lbSubTitle.text = item.pubDate
+        lbSubTitle.text = item.pubDate?.toDisplayFormat
         
         // 회원전용 기사
         if item.payment == "A" {
@@ -254,7 +254,7 @@ class SectionListViewCell: UITableViewCell {
     
     func configure(with item: SearchResult) {
         lbTitle.text = item.title
-        lbSubTitle.text = item.pubDate
+        lbSubTitle.text = item.pubDate?.toDisplayFormat?.toDisplayFormat
         
         // 회원전용 기사
         if item.payment == "A" {
@@ -299,7 +299,7 @@ class SectionListViewCell: UITableViewCell {
     
     func configure(with item: AiSearchArticle) {
         lbTitle.text = item.title
-        lbSubTitle.text = item.pubdate
+        lbSubTitle.text = item.pubdate?.toDisplayFormat
           
         // 이미지 로딩
         if ((item.thumbnail?.isEmpty) == false) {
