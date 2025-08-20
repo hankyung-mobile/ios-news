@@ -82,7 +82,7 @@ class AccountViewController:UIViewController {
         // 로그인된 상태에서 로그인 또는 회원가입 경로로 들어왔을 경우
         if (self.accountViewType == "login" || self.accountViewType == "join") && UserDefaults.standard.bool(forKey: "_ISLOGIN") {
             // 로그아웃 처리
-            deleteLoginData()
+//            deleteLoginData()
         }
         
         if self.accountViewType == "accountInfo" || self.accountViewType == "join" {

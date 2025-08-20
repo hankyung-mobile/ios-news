@@ -201,7 +201,7 @@ class SectionListViewCell: UITableViewCell {
         if item.payment == "A" {
             let attachment = NSTextAttachment()
             attachment.image = UIImage(named: "typeMember")
-            attachment.bounds = CGRect(x: 0, y: -2, width: 36, height: 23)
+            attachment.bounds = CGRect(x: 0, y: -2, width: 24, height: 24)
             
             let attributedString = NSMutableAttributedString(attachment: attachment)
             let spaceString = NSMutableAttributedString(string: " ")
@@ -216,7 +216,7 @@ class SectionListViewCell: UITableViewCell {
         if item.payment == "Y" {
             let attachment = NSTextAttachment()
             attachment.image = UIImage(named: "typePremium")
-            attachment.bounds = CGRect(x: 0, y: -2, width: 26, height: 23)
+            attachment.bounds = CGRect(x: 0, y: -2, width: 24, height: 24)
             
             let attributedString = NSMutableAttributedString(attachment: attachment)
             let spaceString = NSMutableAttributedString(string: " ")

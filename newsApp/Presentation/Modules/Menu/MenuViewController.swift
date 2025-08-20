@@ -192,7 +192,7 @@ class MenuViewController: UIViewController {
             case "WV":
                 openInternalBrowser(url: validURL)
             case "MWV-G":
-                webNavigationDelegate?.openNewsDetail(url: validURL, title: title)
+                webNavigationDelegate?.openNewsDetail(url: validURL, title: nil)
                 self.dismiss(animated: true)
             case "EXT":
                 UIApplication.shared.open(validURL, options: [:])

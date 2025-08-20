@@ -192,6 +192,7 @@ extension EditReportersController: UITableViewDataSource, UITableViewDelegate {
         guard let sectionType = EditReportersViewModel.SectionType(rawValue: indexPath.section) else {
             return UITableViewCell()
         }
+        let isLastCell = indexPath.row == viewModel.itemCount - 1
         
         switch sectionType {
         case .header:
@@ -201,6 +202,8 @@ extension EditReportersController: UITableViewDataSource, UITableViewDelegate {
             guard let item = viewModel.item(at: indexPath) else { return UITableViewCell() }
             let cell = tableView.dequeueReusableCell(withIdentifier: "EditReportersControllerTableViewCell", for: indexPath) as! EditReportersControllerTableViewCell
             cell.configure(with: item)
+            cell.lyDivider.isHidden = isLastCell
+            
             return cell
         }
     }

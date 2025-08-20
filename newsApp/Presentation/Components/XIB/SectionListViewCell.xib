@@ -28,23 +28,20 @@
                                         <rect key="frame" x="0.0" y="0.0" width="237" height="260.33333333333331"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rP4-7T-4xe">
-                                                <rect key="frame" x="0.0" y="0.0" width="237" height="56"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="56" id="fGc-Is-cjd"/>
-                                                </constraints>
+                                                <rect key="frame" x="0.0" y="0.0" width="237" height="24"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gtk-Ij-Rxj">
-                                                <rect key="frame" x="0.0" y="56" width="237" height="8"/>
+                                                <rect key="frame" x="0.0" y="24" width="237" height="8"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="8" id="z6E-PY-jHG"/>
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QsO-QO-9he">
-                                                <rect key="frame" x="0.0" y="64.000000000000014" width="237" height="196.33333333333337"/>
+                                                <rect key="frame" x="0.0" y="32.000000000000014" width="237" height="228.33333333333337"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="18" id="dC0-Up-WHU"/>
                                                 </constraints>

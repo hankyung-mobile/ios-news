@@ -11,6 +11,9 @@ import UIKit
 class SearchLastTableViewCell: UITableViewCell {
 
     @IBOutlet weak var lbDescription: UILabel!
+    @IBOutlet weak var constantBottom: NSLayoutConstraint!
+    @IBOutlet weak var constantTop: NSLayoutConstraint!
+    @IBOutlet weak var heightOfLabel: NSLayoutConstraint!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

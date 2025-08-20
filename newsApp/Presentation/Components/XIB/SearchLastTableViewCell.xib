@@ -40,6 +40,9 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="constantBottom" destination="9ZR-sR-q8F" id="GUL-ZM-vc4"/>
+                <outlet property="constantTop" destination="UpG-k8-hm5" id="CeV-0H-rtO"/>
+                <outlet property="heightOfLabel" destination="2uu-Zx-6dj" id="XLF-Z8-RxY"/>
                 <outlet property="lbDescription" destination="CvE-Mg-SLF" id="AMt-0f-VHC"/>
             </connections>
             <point key="canvasLocation" x="-1047" y="-254"/>

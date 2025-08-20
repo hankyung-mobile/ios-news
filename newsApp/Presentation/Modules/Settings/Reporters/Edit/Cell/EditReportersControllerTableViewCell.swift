@@ -13,6 +13,7 @@ class EditReportersControllerTableViewCell: UITableViewCell {
     @IBOutlet weak var imgReporter: UIImageView!
     @IBOutlet weak var lbName: UILabel!
     @IBOutlet weak var lbRegDate: UILabel!
+    @IBOutlet weak var lyDivider: UIView!
     
     // 이미지 로딩용 프로퍼티 추가
     private var imageTask: URLSessionDataTask?

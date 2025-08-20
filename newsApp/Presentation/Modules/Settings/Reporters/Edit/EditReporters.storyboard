@@ -188,6 +188,7 @@
                                             <outlet property="imgReporter" destination="TTj-Vs-wrQ" id="637-JB-MWs"/>
                                             <outlet property="lbName" destination="WaJ-ob-wTn" id="sZr-9P-iDO"/>
                                             <outlet property="lbRegDate" destination="Yby-gl-XfZ" id="1W4-IA-kNb"/>
+                                            <outlet property="lyDivider" destination="N1p-jl-m6F" id="aat-Vg-nuK"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="HeaderEditReportersTableViewCell" id="te9-W3-SFc" customClass="HeaderEditReportersTableViewCell" customModule="newsApp" customModuleProvider="target">

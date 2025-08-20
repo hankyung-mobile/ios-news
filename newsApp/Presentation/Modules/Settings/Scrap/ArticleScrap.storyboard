@@ -241,6 +241,7 @@
                                             <outlet property="lbScrap" destination="1ib-2A-Bc2" id="HZV-bD-ZHK"/>
                                             <outlet property="lbScrapDate" destination="YVP-vH-cuz" id="dEq-Ck-hxe"/>
                                             <outlet property="lbTitle" destination="Zcg-ik-PXe" id="uU5-km-Qyb"/>
+                                            <outlet property="lyDivider" destination="UDz-k0-oz0" id="kdg-9P-Oah"/>
                                             <outlet property="svCheckbox" destination="dTC-Kt-XYE" id="S3s-dC-OeJ"/>
                                             <outlet property="svScrapList" destination="UZu-Rr-hFK" id="FVv-W7-zOR"/>
                                         </connections>

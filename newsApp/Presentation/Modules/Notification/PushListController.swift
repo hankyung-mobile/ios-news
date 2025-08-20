@@ -41,10 +41,8 @@ class PushListController: UIViewController, UIGestureRecognizerDelegate {
         setupButtonEvents()
         setupLoadingIndicator()
         viewModel.loadFirstPage(with: parameters)
-        
-        // XIB 파일로 Cell 등록
-        let nib = UINib(nibName: "SectionListViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "SectionListViewCell")
+        // 셀 등록
+        registerCells()
         
         if navigationController != nil {
             navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -53,6 +51,23 @@ class PushListController: UIViewController, UIGestureRecognizerDelegate {
         
         view.sendSubviewToBack(noDataView)
         tableView.backgroundColor = .clear
+    }
+    
+    private func registerCells() {
+        // 뉴스 셀 등록
+        let cellNibs = [
+            ("SectionListViewCell", "SectionListViewCell"),
+            ("SearchLastTableViewCell", "SearchLastTableViewCell")
+        ]
+        
+        for (nibName, identifier) in cellNibs {
+            if let _ = Bundle.main.path(forResource: nibName, ofType: "nib") {
+                let nib = UINib(nibName: nibName, bundle: nil)
+                tableView.register(nib, forCellReuseIdentifier: identifier)
+            } else {
+                print("⚠️ Warning: XIB file not found - \(nibName)")
+            }
+        }
     }
     
     private func setupLoadingIndicator() {
@@ -155,24 +170,69 @@ class PushListController: UIViewController, UIGestureRecognizerDelegate {
         present(navigationController, animated: true)
     }
     
+    /// 실제 뉴스 데이터의 개수 (커스텀 셀 제외)
+    private var newsItemCount: Int {
+        return viewModel.itemCount
+    }
+    
+    /// 전체 셀 개수 (헤더 + 뉴스 + 푸터)
+    private var totalCellCount: Int {
+        let baseCount = newsItemCount
+        if baseCount == 0 {
+            return 0 // 데이터가 없으면 커스텀 셀도 보여주지 않음
+        }
+        return baseCount + 1 // 뉴스(n) + 푸터(1)
+    }
+    
+    /// 주어진 인덱스가 푸터 셀인지 확인
+    private func isFooterCell(at index: Int) -> Bool {
+        return index == totalCellCount - 1 && newsItemCount > 0
+    }
+    
+    /// 주어진 인덱스가 뉴스 셀인지 확인하고, 뉴스 데이터 인덱스 반환
+    private func newsItemIndex(for cellIndex: Int) -> Int? {
+        if newsItemCount == 0 { return nil }
+        
+        let newsIndex = cellIndex
+        if newsIndex >= 0 && newsIndex < newsItemCount {
+            return newsIndex
+        }
+        return nil
+    }
+    
 }
 
 // MARK: - UITableViewDataSource & Delegate
 extension PushListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.itemCount
+        return totalCellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let item = viewModel.item(at: indexPath.row) else {
-            return UITableViewCell()
+        let row = indexPath.row
+        let isLastCell = indexPath.row == (newsItemCount - 1)
+        
+        // 푸터 셀
+//        if isFooterCell(at: row) {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "SearchLastTableViewCell", for: indexPath) as! SearchLastTableViewCell
+//            cell.lbDescription.text = "마지막 페이지입니다."
+//            cell.lbDescription.textAlignment = .center
+//            cell.heightOfLabel.constant = 20
+//            cell.constantTop.constant = 24
+//            cell.constantBottom.constant = 24
+//            return cell
+//        }
+        
+        if let newsIndex = newsItemIndex(for: row),
+           let item = viewModel.item(at: newsIndex) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SectionListViewCell", for: indexPath) as! SectionListViewCell
+            cell.configure(with: item)
+            cell.lyDivider.isHidden = isLastCell
+            return cell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SectionListViewCell", for: indexPath) as! SectionListViewCell
-        cell.configure(with: item)
         
-        
-        return cell
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

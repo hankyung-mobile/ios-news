@@ -35,7 +35,6 @@ class ReportersTableViewController: UIViewController {
     
     // 커스텀 셀 식별자
     private let headerCellIdentifier = "HeaderReportersTableViewCell"
-    private let footerCellIdentifier = "LastReportersTableViewCell"
     private let newsCellIdentifier = "SectionListViewCell"
     
     override func viewDidLoad() {
@@ -43,7 +42,6 @@ class ReportersTableViewController: UIViewController {
         setupTableView()
         bindViewModel()
         setupLoadingIndicator()
-        
         // 셀 등록
         registerCells()
         
@@ -55,8 +53,19 @@ class ReportersTableViewController: UIViewController {
     
     private func registerCells() {
         // 뉴스 셀 등록
-        let nib = UINib(nibName: "SectionListViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: newsCellIdentifier)
+        let cellNibs = [
+            ("SectionListViewCell", "SectionListViewCell"),
+            ("SearchLastTableViewCell", "SearchLastTableViewCell")
+        ]
+        
+        for (nibName, identifier) in cellNibs {
+            if let _ = Bundle.main.path(forResource: nibName, ofType: "nib") {
+                let nib = UINib(nibName: nibName, bundle: nil)
+                tableView.register(nib, forCellReuseIdentifier: identifier)
+            } else {
+                print("⚠️ Warning: XIB file not found - \(nibName)")
+            }
+        }
     }
     
     private func setupLoadingIndicator() {
@@ -232,7 +241,12 @@ extension ReportersTableViewController: UITableViewDataSource, UITableViewDelega
         
         // 푸터 셀
         if isFooterCell(at: row) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: footerCellIdentifier, for: indexPath) as! LastReportersTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SearchLastTableViewCell", for: indexPath) as! SearchLastTableViewCell
+            cell.lbDescription.text = "마지막 페이지입니다."
+            cell.lbDescription.textAlignment = .center
+            cell.heightOfLabel.constant = 20
+            cell.constantTop.constant = 24
+            cell.constantBottom.constant = 24
             return cell
         }
         
@@ -241,7 +255,7 @@ extension ReportersTableViewController: UITableViewDataSource, UITableViewDelega
            let item = viewModel.item(at: newsIndex) {
             let cell = tableView.dequeueReusableCell(withIdentifier: newsCellIdentifier, for: indexPath) as! SectionListViewCell
             cell.configure(with: item)
-            cell.lyDivider.isHidden = isLastCell
+//            cell.lyDivider.isHidden = isLastCell
             return cell
         }
         

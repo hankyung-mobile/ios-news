@@ -19,6 +19,7 @@ class ArticleScrapListViewCell: UITableViewCell {
     @IBOutlet weak var lbScrapDate: UILabel!
     @IBOutlet weak var svScrapList: UIStackView!
     @IBOutlet weak var lbScrap: UILabel!
+    @IBOutlet weak var lyDivider: UIView!
     
     weak var delegate: ArticleScrapCellDelegate?
     private var isScrapSelected: Bool = false

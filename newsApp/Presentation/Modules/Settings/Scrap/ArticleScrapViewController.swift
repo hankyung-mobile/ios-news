@@ -51,7 +51,24 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
         setupButtonEvents()
         setupLoadingIndicator()
         
-        tableView.tableFooterView = nil
+        // 셀 등록
+        registerCells()
+    }
+    
+    private func registerCells() {
+        // 뉴스 셀 등록
+        let cellNibs = [
+            ("SearchLastTableViewCell", "SearchLastTableViewCell")
+        ]
+        
+        for (nibName, identifier) in cellNibs {
+            if let _ = Bundle.main.path(forResource: nibName, ofType: "nib") {
+                let nib = UINib(nibName: nibName, bundle: nil)
+                tableView.register(nib, forCellReuseIdentifier: identifier)
+            } else {
+                print("⚠️ Warning: XIB file not found - \(nibName)")
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -236,6 +253,7 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
                     self?.loadingIndicator.stopAnimating()
                     self?.noDataView.isHidden = !items.isEmpty
                     self?.lbSelectedCount.text = "\(String(self?.viewModel.itemCount ?? 0))개 스크랩"
+                    self?.btnEdit.isHidden = items.isEmpty
                 } else {
                     self?.loadingIndicator.startAnimating()
                 }
@@ -317,10 +335,7 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
         
         // 스티키 바텀뷰 업데이트
         updateStickyBottomView()
-        
-        // ✅ 테이블뷰 footer 설정
-        updateTableViewFooter()
-        
+       
         btnDelete.isHidden = !isEditMode
         
         // 테이블뷰 리로드
@@ -328,18 +343,6 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
                          duration: 0.3,
                          options: .transitionCrossDissolve) {
             self.tableView.reloadData()
-        }
-    }
-    
-    private func updateTableViewFooter() {
-        if isEditMode {
-            // 편집 모드일 때: 80 높이의 빈 footer 추가
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 87))
-            footerView.backgroundColor = .clear
-            tableView.tableFooterView = footerView
-        } else {
-            // 일반 모드일 때: footer 제거
-            tableView.tableFooterView = nil
         }
     }
     
@@ -398,11 +401,16 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
         // ViewModel의 삭제 메서드 호출 - ScrapItem 배열 전달
         viewModel.deleteScrapItems(items: selectedItems)
         
+        
+        if viewModel.itemCount == selectedItems.count {
+            isEditMode = false
+            btnEdit.setTitle("편집", for: .normal)
+            btnDelete.isHidden = true
+        }
         // 삭제 후 상태 초기화
         selectedIndexes.removeAll()
-        isEditMode = false
-        btnEdit.setTitle("편집", for: .normal)
-        btnDelete.isHidden = true
+//        btnEdit.setTitle("편집", for: .normal)
+//        btnDelete.isHidden = true
         updateStickyBottomView()
     
     }
@@ -453,19 +461,62 @@ class ArticleScrapViewController: UIViewController, UIGestureRecognizerDelegate 
         // 상세 페이지로 이동하는 로직
          webNavigationDelegate?.openNewsDetail(url: validURL, title: nil)
     }
+    
+    /// 실제 뉴스 데이터의 개수 (커스텀 셀 제외)
+    private var newsItemCount: Int {
+        return viewModel.itemCount
+    }
+    
+    /// 전체 셀 개수 (헤더 + 뉴스 + 푸터)
+    private var totalCellCount: Int {
+        let baseCount = newsItemCount
+        if baseCount == 0 {
+            return 0 // 데이터가 없으면 커스텀 셀도 보여주지 않음
+        }
+        return baseCount + 1 // 뉴스(n) + 푸터(1)
+    }
+    
+    /// 주어진 인덱스가 푸터 셀인지 확인
+    private func isFooterCell(at index: Int) -> Bool {
+        return index == totalCellCount - 1 && newsItemCount > 0
+    }
+    
+    /// 주어진 인덱스가 뉴스 셀인지 확인하고, 뉴스 데이터 인덱스 반환
+    private func newsItemIndex(for cellIndex: Int) -> Int? {
+        if newsItemCount == 0 { return nil }
+        
+        let newsIndex = cellIndex
+        if newsIndex >= 0 && newsIndex < newsItemCount {
+            return newsIndex
+        }
+        return nil
+    }
 }
 
 // MARK: - TableView DataSource & Delegate
 extension ArticleScrapViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.itemCount + (shouldShowHeader ? 1 : 0)
+        return totalCellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = indexPath.row
+        let isLastCell = indexPath.row == (newsItemCount - 1)
         // 헤더 셀 처리
-        if isHeaderIndex(indexPath) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "HeaderArticleScrapListViewCell", for: indexPath) as! HeaderArticleScrapListViewCell
+//        if isHeaderIndex(indexPath) {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "HeaderArticleScrapListViewCell", for: indexPath) as! HeaderArticleScrapListViewCell
+//            return cell
+//        }
+        
+        // 푸터 셀
+        if isFooterCell(at: row) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SearchLastTableViewCell", for: indexPath) as! SearchLastTableViewCell
+            cell.lbDescription.text = "마지막 페이지입니다."
+            cell.lbDescription.textAlignment = .center
+            cell.heightOfLabel.constant = 20
+            cell.constantTop.constant = 24
+            cell.constantBottom.constant = 76
             return cell
         }
         
@@ -485,6 +536,8 @@ extension ArticleScrapViewController: UITableViewDataSource, UITableViewDelegate
         
         // 셀 구성
         cell.configure(with: item, isEditMode: isEditMode, isScrapSelected: isScrapSelected)
+//        cell.lyDivider.isHidden = isLastCell
+        print("셀 \(isLastCell)")
         
         return cell
     }

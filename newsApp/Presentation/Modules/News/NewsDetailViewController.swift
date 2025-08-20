@@ -227,6 +227,7 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         
         self.webView.configuration.userContentController.add(self, name: "openNativeNewsList")
         self.webView.configuration.userContentController.add(self, name: "shareURL")
+        self.webView.configuration.userContentController.add(self, name: "setTitle")
     }
     
     private func setupViews() {
@@ -917,6 +918,31 @@ extension NewsDetailViewController: WKScriptMessageHandler {
             )
             
             present(activityViewController, animated: true)
+        }
+        
+        if message.name == "setTitle" {
+            
+            let body = message.body
+            
+            guard let dictionary = body as? [String: Any] else {
+                
+                let msg = "오류가 발생했습니다. 다시 시도해 주세요."
+                
+                let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
+                let defaultAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(defaultAction)
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: {
+                        self.presentingViewController?.dismiss(animated: true)
+                    })
+                }
+                return
+            }
+            
+            let title = dictionary["title"] as? String ?? ""
+            self.titleLabel.text = title
+            
         }
     }
 }
