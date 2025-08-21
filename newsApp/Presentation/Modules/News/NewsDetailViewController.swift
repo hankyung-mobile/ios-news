@@ -64,6 +64,24 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         return label
     }()
     
+    private lazy var errorContainerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .systemBackground // 또는 원하는 배경색
+        containerView.isHidden = true
+        containerView.isUserInteractionEnabled = true
+        return containerView
+    }()
+
+    // 에러 이미지뷰
+    private lazy var errorImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "network_error") // 커스텀 이미지
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
     // 프로그레스 바
     private lazy var progressView: UIProgressView = {
         let progress = UIProgressView(progressViewStyle: .default)
@@ -228,6 +246,7 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         self.webView.configuration.userContentController.add(self, name: "openNativeNewsList")
         self.webView.configuration.userContentController.add(self, name: "shareURL")
         self.webView.configuration.userContentController.add(self, name: "setTitle")
+        self.webView.configuration.userContentController.add(self, name: "doReload")
     }
     
     private func setupViews() {
@@ -243,33 +262,41 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         view.addSubview(loadingIndicator)
         loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
         
-        // 에러 레이블 추가
-        view.addSubview(errorLabel)
-        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        // 에러 컨테이너 뷰 추가
+        view.addSubview(errorContainerView)
+        errorContainerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 컨테이너 뷰 내부에 이미지뷰만 추가
+        errorContainerView.addSubview(errorImageView)
+
         
         NSLayoutConstraint.activate([
-            // 프로그레스 바
-            progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 107),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            progressView.heightAnchor.constraint(equalToConstant: 2),
-            
-            // 웹뷰 (프로그레스 바 다음에 위치하도록 임시 설정, setupNavigationBar에서 최종 설정)
-            webView.topAnchor.constraint(equalTo: progressView.bottomAnchor),
-            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            // 로딩 인디케이터
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            // 에러 레이블
-            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+             // 프로그레스 바
+             progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 107),
+             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             progressView.heightAnchor.constraint(equalToConstant: 2),
+             
+             // 웹뷰
+             webView.topAnchor.constraint(equalTo: progressView.bottomAnchor),
+             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             
+             // 에러 컨테이너 뷰 - 웹뷰와 같은 영역 (view 기준으로 설정)
+             errorContainerView.topAnchor.constraint(equalTo: progressView.bottomAnchor),
+             errorContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             errorContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             errorContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             
+             // 컨테이너 뷰 내부 - 이미지뷰 (실사이즈, 중앙 정렬)
+             errorImageView.centerXAnchor.constraint(equalTo: errorContainerView.centerXAnchor),
+             errorImageView.centerYAnchor.constraint(equalTo: errorContainerView.centerYAnchor, constant: -53),
+             
+             // 로딩 인디케이터 (가장 위에)
+             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+         ])
         
         // 당겨서 새로고침 추가
         webView.scrollView.refreshControl = UIRefreshControl()
@@ -278,6 +305,17 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         webView.scrollView.refreshControl?.tintColor = .gray
 //        webView.scrollView.refreshControl?.attributedTitle = NSAttributedString(string: "당겨서 새로고침", attributes: [.foregroundColor: UIColor(red: 187 / 255, green: 38 / 255, blue: 73 / 255, alpha: 1.0)])
         webView.scrollView.refreshControl?.attributedTitle = NSAttributedString(string: "당겨서 새로고침", attributes: [.foregroundColor: UIColor(.gray)])
+    }
+    
+    // 에러 이미지 표시 함수
+    private func showErrorImage() {
+        errorContainerView.isHidden = false
+        
+//        // 에러 이미지뷰에 탭 제스처 추가
+//        if errorImageView.gestureRecognizers == nil {
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(retryLoading))
+//            errorImageView.addGestureRecognizer(tapGesture)
+//        }
     }
     
     // MARK: - setupNavigationBar
@@ -410,6 +448,8 @@ class NewsDetailViewController: UIViewController, UIGestureRecognizerDelegate, W
         
         // 프로그레스 모니터링
         monitorLoadingProgress()
+        
+        checkNetworkStatus()
         
     }
     
@@ -678,8 +718,10 @@ extension NewsDetailViewController: WKNavigationDelegate {
             case (200...299):
 //                print("Note: cookie load success")
                 print("")
+                errorContainerView.isHidden = true
             case (300...399):
                 print("Note: cookie load redirection")
+                errorContainerView.isHidden = true
             case (400...499):
                 print("Error: clientError code 400...499")
                 errorLabel.text = "페이지를 로드할 수 없습니다.\n\(response.statusCode)\n탭하여 다시 시도하세요."
@@ -691,7 +733,7 @@ extension NewsDetailViewController: WKNavigationDelegate {
                     errorLabel.isUserInteractionEnabled = true
                     errorLabel.addGestureRecognizer(tapGesture)
                 }
-
+                showErrorImage()
             case (500...599):
                 print("Error: serverError code 500...599")
                 errorLabel.text = "페이지를 로드할 수 없습니다.\n\(response.statusCode)\n탭하여 다시 시도하세요."
@@ -703,6 +745,7 @@ extension NewsDetailViewController: WKNavigationDelegate {
                     errorLabel.isUserInteractionEnabled = true
                     errorLabel.addGestureRecognizer(tapGesture)
                 }
+                showErrorImage()
 
             default:
                 print("unknown")
@@ -943,6 +986,29 @@ extension NewsDetailViewController: WKScriptMessageHandler {
             let title = dictionary["title"] as? String ?? ""
             self.titleLabel.text = title
             
+        }
+        
+        if message.name == "doReload" {
+            
+            let body = message.body
+            
+            guard let dictionary = body as? [String: Any] else {
+                
+                let msg = "오류가 발생했습니다. 다시 시도해 주세요."
+                
+                let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
+                let defaultAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(defaultAction)
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: {
+                        self.presentingViewController?.dismiss(animated: true)
+                    })
+                }
+                return
+            }
+            
+            self.webView?.reload()
         }
     }
 }

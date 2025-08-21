@@ -657,7 +657,7 @@ func returnAccountParameter() -> Dictionary<String,String> {
     }
     
     if let id:String = accountData["SSOid"] as? String {
-        parameter["SSO_ID"] = id
+        parameter["SSO_ID"] = id.urlDecoded
     } else {
         parameter["SSO_ID"] = ""
     }
@@ -760,7 +760,7 @@ func getUserTokensArray() -> [String] {
     let hkToken = accountData["_hk_token"] as? String ?? ""
     let ssoToken = accountData["ssoToken"] as? String ?? ""
     
-    return [ssoId, hkToken, ssoToken, deviceId]
+    return [ssoId.urlDecoded, hkToken, ssoToken, deviceId]
 }
 
 // 서버에 api 호출용 SSOid 인코딩 없이
@@ -848,6 +848,14 @@ func isImageMostlyWhite(_ image: UIImage) -> Bool {
     
     // 빈 페이지 판단: 흰색이 많고 색상 분포가 적으면 빈 페이지
     return whiteRatio > 0.8 && colorDistribution < 30
+}
+
+func checkNetworkStatus() {
+    guard NetworkStatusManager.shared.isConnected() else {
+        CustomAlert.shared.showNetworkError()
+        return
+    }
+    // API 호출...
 }
 
 

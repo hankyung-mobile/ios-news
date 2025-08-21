@@ -42,6 +42,24 @@ class WebContentController: UIViewController, WKUIDelegate {
         return label
     }()
     
+    private lazy var errorContainerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .systemBackground // 또는 원하는 배경색
+        containerView.isHidden = true
+        containerView.isUserInteractionEnabled = true
+        return containerView
+    }()
+
+    // 에러 이미지뷰
+    private lazy var errorImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "network_error") // 커스텀 이미지
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     private var disposeBag = DisposeBag()
     private var isLoaded = false
     private var isFirstAppearance = true
@@ -148,25 +166,20 @@ class WebContentController: UIViewController, WKUIDelegate {
         
         self.webView.configuration.userContentController.add(self, name: "openNativeNewsList")
         self.webView.configuration.userContentController.add(self, name: "shareURL")
+        self.webView.configuration.userContentController.add(self, name: "moveToNewsTab")
+        self.webView.configuration.userContentController.add(self, name: "doReload")
     }
     
     private func setupViews() {
         // 웹뷰 추가 (이미 초기화된 상태)
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        
-        // 로딩 인디케이터 추가
-        view.addSubview(loadingIndicator)
-        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -53)
         ])
         
         // 에러 레이블 추가
@@ -179,10 +192,49 @@ class WebContentController: UIViewController, WKUIDelegate {
             errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
+        // 에러 컨테이너 뷰 추가 (웹뷰 다음에 추가해서 위에 표시)
+        view.addSubview(errorContainerView)
+        errorContainerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 컨테이너 뷰 내부에 이미지뷰만 추가
+        errorContainerView.addSubview(errorImageView)
+        
+        NSLayoutConstraint.activate([
+            // 에러 컨테이너 뷰 - 웹뷰와 같은 영역
+            errorContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            errorContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            errorContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            errorContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            // 컨테이너 뷰 내부 - 이미지뷰 (실사이즈, 중앙 정렬)
+            errorImageView.centerXAnchor.constraint(equalTo: errorContainerView.centerXAnchor),
+            errorImageView.centerYAnchor.constraint(equalTo: errorContainerView.centerYAnchor, constant: -53)
+        ])
+        
+        // 로딩 인디케이터 추가 (가장 마지막에 추가해서 최상위에 표시)
+        view.addSubview(loadingIndicator)
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -53)
+        ])
+        
         webView.scrollView.refreshControl = UIRefreshControl()
         webView.scrollView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
         webView.scrollView.refreshControl?.tintColor = .gray
         webView.scrollView.refreshControl?.attributedTitle = NSAttributedString(string: "당겨서 새로고침", attributes: [.foregroundColor: UIColor(.gray)])
+    }
+
+    
+    // 에러 이미지 표시 함수
+    private func showErrorImage() {
+        errorContainerView.isHidden = false
+        
+//        // 에러 이미지뷰에 탭 제스처 추가
+//        if errorImageView.gestureRecognizers == nil {
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(retryLoading))
+//            errorImageView.addGestureRecognizer(tapGesture)
+//        }
     }
     
     // 미리 로드 메서드 추가
@@ -665,9 +717,11 @@ extension WebContentController: WKNavigationDelegate {
             switch response.statusCode {
             case (200...299):
 //                print("Note: cookie load success")
+                errorContainerView.isHidden = true
                 print("")
             case (300...399):
                 print("Note: cookie load redirection")
+                errorContainerView.isHidden = true
             case (400...499):
                 print("Error: clientError code 400...499")
                 errorLabel.text = "페이지를 로드할 수 없습니다.\n\(response.statusCode)\n탭하여 다시 시도하세요."
@@ -678,7 +732,7 @@ extension WebContentController: WKNavigationDelegate {
                     errorLabel.isUserInteractionEnabled = true
                     errorLabel.addGestureRecognizer(tapGesture)
                 }
-
+                showErrorImage()
             case (500...599):
                 print("Error: serverError code 500...599")
                 errorLabel.text = "페이지를 로드할 수 없습니다.\n\(response.statusCode)\n탭하여 다시 시도하세요."
@@ -689,7 +743,7 @@ extension WebContentController: WKNavigationDelegate {
                     errorLabel.isUserInteractionEnabled = true
                     errorLabel.addGestureRecognizer(tapGesture)
                 }
-
+                showErrorImage()
             default:
                 print("unknown")
             }
@@ -848,6 +902,59 @@ extension WebContentController: WKScriptMessageHandler {
             )
             
             present(activityViewController, animated: true)
+        }
+        
+        if message.name == "moveToNewsTab" {
+            
+            let body = message.body
+            
+            guard let dictionary = body as? [String: Any] else {
+                
+                let msg = "오류가 발생했습니다. 다시 시도해 주세요."
+                
+                let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
+                let defaultAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(defaultAction)
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: {
+                        self.presentingViewController?.dismiss(animated: true)
+                    })
+                }
+                return
+            }
+            
+            let id = dictionary["id"] as? String ?? ""
+            let url = dictionary["url"] as? String ?? ""
+            
+            NotificationCenter.default.post(
+                name: .moveToNewsPage,
+                object: nil,
+                userInfo: ["id": id]
+            )
+        }
+        
+        if message.name == "doReload" {
+            
+            let body = message.body
+            
+            guard let dictionary = body as? [String: Any] else {
+                
+                let msg = "오류가 발생했습니다. 다시 시도해 주세요."
+                
+                let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
+                let defaultAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(defaultAction)
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: {
+                        self.presentingViewController?.dismiss(animated: true)
+                    })
+                }
+                return
+            }
+            
+            self.webView?.reload()
         }
 
     }

@@ -159,6 +159,7 @@ class MenuViewController: UIViewController {
     
     private func handleItemSelection(item: Any) {
         var urlString: String?
+        var id: String?
         var isSlide: Bool?
         var browser: String?
         var title: String?
@@ -166,20 +167,25 @@ class MenuViewController: UIViewController {
         // 타입별로 값 추출
         if let newsItem = item as? NewsMenuItem {
             urlString = newsItem.url
+            id = newsItem.id
             isSlide = newsItem.isSlide
             browser = newsItem.browser
             title = newsItem.title
         } else if let premiumItem = item as? PremiumMenuItem {
             urlString = premiumItem.url
+            id = premiumItem.id
             isSlide = premiumItem.isSlide
             browser = premiumItem.browser
             title = premiumItem.title
         } else if let marketItem = item as? MarketMenuItem {
             urlString = marketItem.url
+            id = marketItem.id
             isSlide = marketItem.isSlide
             browser = marketItem.browser
             title = marketItem.title
         }
+        
+        checkNetworkStatus()
         
         guard let url = urlString, !url.isEmpty,
               let validURL = URL(string: url) else {
@@ -207,19 +213,19 @@ class MenuViewController: UIViewController {
                 NotificationCenter.default.post(
                     name: .moveToNewsPage,
                     object: nil,
-                    userInfo: ["url": url]
+                    userInfo: ["id": id]
                 )
             case .PREMIUM:
                 NotificationCenter.default.post(
                     name: .moveToPremiumPage,
                     object: nil,
-                    userInfo: ["url": url]
+                    userInfo: ["id": id]
                 )
             case .MARKET:
                 NotificationCenter.default.post(
                     name: .moveToMarketPage,
                     object: nil,
-                    userInfo: ["url": url]
+                    userInfo: ["id": id]
                 )
             }
             

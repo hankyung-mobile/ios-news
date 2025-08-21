@@ -64,7 +64,7 @@
                                 <rect key="frame" x="0.0" y="168" width="393" height="684"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MenuBannerTableViewCell" id="3f1-Qb-JVi" customClass="MenuBannerTableViewCell" customModule="newsApp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MenuBannerTableViewCell" id="3f1-Qb-JVi" customClass="MenuBannerTableViewCell" customModule="newsApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="393" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3f1-Qb-JVi" id="wP6-UO-72l">
@@ -74,7 +74,7 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BRk-LY-abI">
                                                     <rect key="frame" x="20" y="0.0" width="353" height="80"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="bannerForTest" translatesAutoresizingMaskIntoConstraints="NO" id="36W-OF-zGS">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36W-OF-zGS">
                                                             <rect key="frame" x="0.0" y="0.0" width="353" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -97,6 +97,9 @@
                                                 <constraint firstAttribute="bottom" secondItem="BRk-LY-abI" secondAttribute="bottom" id="ZMI-0Q-SOZ"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="bannerImageView" destination="36W-OF-zGS" id="DMr-Lv-R6Y"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MenuTableViewCell" id="zRc-vg-0pK" customClass="MenuTableViewCell" customModule="newsApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="130" width="393" height="69"/>
@@ -335,7 +338,6 @@
     <resources>
         <image name="Grabber" width="36" height="5"/>
         <image name="arrowNarrowUpRight" width="24" height="24"/>
-        <image name="bannerForTest" width="640" height="160"/>
         <image name="closeBlack" width="44" height="44"/>
         <image name="newsMenu" width="60" height="26"/>
         <namedColor name="#1A1A1A">

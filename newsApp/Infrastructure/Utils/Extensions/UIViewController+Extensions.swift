@@ -140,3 +140,22 @@ extension UIViewController {
         return current
     }
 }
+
+extension UIViewController {
+    
+    func checkNetwork() -> Bool {
+        if !NetworkStatusManager.shared.isConnected() {
+            CustomAlert.shared.showNetworkError()
+            return false
+        }
+        return true
+    }
+    
+    func showNetworkAlert(message: String? = nil) {
+        if let message = message {
+            CustomAlert.shared.show(message: message)
+        } else {
+            CustomAlert.shared.showNetworkError()
+        }
+    }
+}

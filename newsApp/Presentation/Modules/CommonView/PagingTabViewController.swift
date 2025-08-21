@@ -48,6 +48,8 @@ class PagingTabView: UIView {
         cv.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
         cv.dataSource = self
         cv.delegate = self
+        cv.delaysContentTouches = false  // 터치 지연 제거
+        cv.canCancelContentTouches = true
         return cv
     }()
     
@@ -84,6 +86,11 @@ class PagingTabView: UIView {
             let indexPath = IndexPath(item: selectedTabIndex, section: 0)
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+    }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let expandedBounds = bounds.insetBy(dx: -5, dy: -10)
+        return expandedBounds.contains(point)
     }
     
     required init?(coder: NSCoder) {

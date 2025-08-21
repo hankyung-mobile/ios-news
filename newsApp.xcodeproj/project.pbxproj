@@ -27,6 +27,8 @@
 		4BF18A72299F1C1200E9FECC /* getIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF18A71299F1C1200E9FECC /* getIP.swift */; };
 		691170DB2DD734E10006945F /* NewsContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691170DA2DD734E10006945F /* NewsContentController.swift */; };
 		691170DD2DD735630006945F /* News.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 691170DC2DD735630006945F /* News.storyboard */; };
+		6916B96F2E55DE2600FBCC7B /* NetworkStatusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6916B96E2E55DE2600FBCC7B /* NetworkStatusManager.swift */; };
+		6916B9712E55DE9200FBCC7B /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6916B9702E55DE9200FBCC7B /* CustomAlert.swift */; };
 		692ED5C82E167A0E009E48D8 /* SectionListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692ED5C72E167A0E009E48D8 /* SectionListViewCell.swift */; };
 		692ED5CA2E17AFA1009E48D8 /* BannerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692ED5C92E17AFA1009E48D8 /* BannerViewCell.swift */; };
 		692ED5CC2E1B9966009E48D8 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692ED5CB2E1B9966009E48D8 /* String+Extensions.swift */; };
@@ -322,6 +324,8 @@
 		4BF18A71299F1C1200E9FECC /* getIP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = getIP.swift; sourceTree = "<group>"; };
 		691170DA2DD734E10006945F /* NewsContentController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsContentController.swift; sourceTree = "<group>"; };
 		691170DC2DD735630006945F /* News.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = News.storyboard; sourceTree = "<group>"; };
+		6916B96E2E55DE2600FBCC7B /* NetworkStatusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusManager.swift; sourceTree = "<group>"; };
+		6916B9702E55DE9200FBCC7B /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		692ED5C72E167A0E009E48D8 /* SectionListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionListViewCell.swift; sourceTree = "<group>"; };
 		692ED5C92E17AFA1009E48D8 /* BannerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerViewCell.swift; sourceTree = "<group>"; };
 		692ED5CB2E1B9966009E48D8 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -654,6 +658,8 @@
 				696E3F3B2DDC4387007A916E /* NetworkManager.swift */,
 				696E3F392DDC4373007A916E /* APIRouter.swift */,
 				69D44B542DF6BE9E00A7254E /* SVGCacheManager.swift */,
+				6916B96E2E55DE2600FBCC7B /* NetworkStatusManager.swift */,
+				6916B9702E55DE9200FBCC7B /* CustomAlert.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1638,6 +1644,7 @@
 				6986EFDC2E262D3B00F12436 /* ReportersViewModel.swift in Sources */,
 				69EEA34D2E3B35D50006AEE7 /* HkMediaGroupController.swift in Sources */,
 				69AB772C2DF025A000D5A343 /* UIApplication+Extensions.swift in Sources */,
+				6916B9712E55DE9200FBCC7B /* CustomAlert.swift in Sources */,
 				696E3F422DDC448A007A916E /* JSBridgeManager.swift in Sources */,
 				696F558B2E3384380073EC13 /* SearchLatestNewsTableViewCell.swift in Sources */,
 				69AB77212DE82D7300D5A343 /* Master.swift in Sources */,
@@ -1685,6 +1692,7 @@
 				69EEA3272E38BC440006AEE7 /* Term.swift in Sources */,
 				692ED5CE2E1BAB56009E48D8 /* ArticleScrapViewController.swift in Sources */,
 				69A5F8BA2E385C71002D4DFD /* StockSearchViewModel.swift in Sources */,
+				6916B96F2E55DE2600FBCC7B /* NetworkStatusManager.swift in Sources */,
 				69A5F8AF2E384E76002D4DFD /* AiSearchTableViewCell.swift in Sources */,
 				699B45532E2A3F28005CB4D3 /* EditReportersControllerTableViewCell.swift in Sources */,
 				696E3F722DE04243007A916E /* NewsDetailViewController.swift in Sources */,

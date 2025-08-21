@@ -58,7 +58,7 @@ extension String {
             }
         }
         
-        return nil
+        return self
     }
 }
 

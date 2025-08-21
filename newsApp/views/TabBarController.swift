@@ -164,7 +164,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         NotificationCenter.default.post(
             name: name,
             object: nil,
-            userInfo: ["url": findMainSlideURL() ?? ""]
+            userInfo: ["id": findMainSlideID() ?? ""]
         )
         
         // 직접 ScrollableViewController인지 확인
@@ -214,36 +214,36 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         }
     }
     
-    private func findMainSlideURL() -> String? {
+    private func findMainSlideID() -> String? {  // 함수명 변경: findMainSlideURL -> findMainSlideID
         
         switch self.selectedIndex {
         case 0: // 뉴스 탭
             let slides = AppDataManager.shared.getNewsSlideData()
             let mainSlide = slides.first { $0.isMain ?? true }
             
-            guard let url = mainSlide?.url, !url.isEmpty else {
+            guard let id = mainSlide?.id, !id.isEmpty else {
                 return nil
             }
             
-            return url
+            return id  // url -> id로 변경
         case 1: // 프리미엄 탭
             let slides = AppDataManager.shared.getPremiumSlideData()
             let mainSlide = slides.first { $0.isMain ?? true }
             
-            guard let url = mainSlide?.url, !url.isEmpty else {
+            guard let id = mainSlide?.id, !id.isEmpty else {
                 return nil
             }
             
-            return url
+            return id  // url -> id로 변경
         case 3:
             let slides = AppDataManager.shared.getMarketSlideData()
             let mainSlide = slides.first { $0.isMain ?? true }
             
-            guard let url = mainSlide?.url, !url.isEmpty else {
+            guard let id = mainSlide?.id, !id.isEmpty else {
                 return nil
             }
             
-            return url
+            return id  // url -> id로 변경
         default:
             return ""
         }
@@ -258,6 +258,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        checkNetworkStatus()
         
         if selectedViewController != viewController {
             

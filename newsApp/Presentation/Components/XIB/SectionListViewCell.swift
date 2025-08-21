@@ -241,7 +241,7 @@ class SectionListViewCell: UITableViewCell {
     
     func configure(with item: PushItem) {
         lbTitle.text = item.message
-        lbSubTitle.text = item.indate
+        lbSubTitle.text = item.indate?.toDisplayFormat
         
         // 이미지 로딩
         if ((item.thumbimg?.isEmpty) == false) {

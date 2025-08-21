@@ -71,6 +71,7 @@ class SettingsViewController: UIViewController {
         svLogin.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 self?.showLoginView()
                 return
@@ -81,6 +82,7 @@ class SettingsViewController: UIViewController {
         svLogout.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let alert = UIAlertController(title: nil, message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "확인", style: .default, handler : {(action) in
@@ -100,6 +102,7 @@ class SettingsViewController: UIViewController {
         svLoginInfo.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 guard let accountView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AccountViewController") as? AccountViewController else { return }
                 
@@ -114,6 +117,7 @@ class SettingsViewController: UIViewController {
         svScrap.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 if !(self?.isLoggedIn() ?? false) {
                     self?.showLoginView()
@@ -138,6 +142,7 @@ class SettingsViewController: UIViewController {
         svMyStock.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 if !(self?.isLoggedIn() ?? false) {
                     self?.showLoginView()
@@ -158,6 +163,7 @@ class SettingsViewController: UIViewController {
         svManagerNoti.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 if let appSettings = URL(string: UIApplication.openSettingsURLString){
                     UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
@@ -169,6 +175,7 @@ class SettingsViewController: UIViewController {
         svReporters.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 if !(self?.isLoggedIn() ?? false) {
                     self?.showLoginView()
@@ -193,6 +200,7 @@ class SettingsViewController: UIViewController {
         svUsage.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help/policy")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
@@ -205,6 +213,7 @@ class SettingsViewController: UIViewController {
         svPolicy.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help/privacy")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
@@ -217,6 +226,7 @@ class SettingsViewController: UIViewController {
         svHelpDesk.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
@@ -229,6 +239,7 @@ class SettingsViewController: UIViewController {
         svNewsLetter.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 self?.openNewsDetail(url: URL(string: "https://stg-webview.hankyung.com/newsletter")!, title: "뉴스레터")
                 
@@ -238,6 +249,7 @@ class SettingsViewController: UIViewController {
         btnBell.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let storyboard = UIStoryboard(name: "PushList", bundle: nil)
                 let pushVC = storyboard.instantiateViewController(withIdentifier: "PushListController") as! PushListController
@@ -256,6 +268,7 @@ class SettingsViewController: UIViewController {
         svHKMediaGroup.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 let storyboard = UIStoryboard(name: "HkMediaGroup", bundle: nil)
                 let pushVC = storyboard.instantiateViewController(withIdentifier: "HkMediaGroupController") as! HkMediaGroupController
@@ -274,6 +287,7 @@ class SettingsViewController: UIViewController {
         svFont.rx_tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                checkNetworkStatus()
                 
                 // 안전한 방식
                 if let settingsURL = URL(string: UIApplication.openSettingsURLString) {

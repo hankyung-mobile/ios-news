@@ -81,7 +81,7 @@ class MarketViewController: UIViewController {
         
         NotificationCenter.default.addObserver(
               self,
-              selector: #selector(moveToPageWithURL),
+              selector: #selector(moveToPageWithID),
               name: .moveToMarketPage,
               object: nil
           )
@@ -162,15 +162,14 @@ class MarketViewController: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name("OptimizeWebViewMemory"), object: nil)
     }
     
-    @objc private func moveToPageWithURL(_ notification: Notification) {
-        guard let url = notification.userInfo?["url"] as? String else { return }
+    @objc private func moveToPageWithID(_ notification: Notification) {
+        guard let id = notification.userInfo?["id"] as? String else { return }
         
-        // WebContentViewController들에서 URL 매칭해서 이동
-        for (index, webVC) in allWebControllers.enumerated() {
-            // URL을 String으로 변환해서 비교
-            let currentURLString = webVC.currentURL.absoluteString
-            
-            if currentURLString == url {
+        // NewsSlideItem의 id로 매칭해서 이동
+        let slides = AppDataManager.shared.getMarketSlideData()
+        
+        for (index, slide) in slides.enumerated() {
+            if slide.id == id {
                 moveToPage(at: index)
                 return
             }

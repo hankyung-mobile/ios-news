@@ -23,6 +23,7 @@ struct AppInfoData: Codable {
     let inappUrls: [String]?
     let externalUrls: [String]?
     let notice: Notice?
+    let banner: [Banner]?
     
     enum CodingKeys: String, CodingKey {
         case appVersion = "app-version"
@@ -30,6 +31,7 @@ struct AppInfoData: Codable {
         case inappUrls = "inapp-urls"
         case externalUrls = "external-urls"
         case notice
+        case banner
     }
 }
 
@@ -55,4 +57,17 @@ struct Notice: Codable {
     let title: String?
     let content: String?
     let url: String?
+}
+
+// MARK: - Banner
+struct Banner: Codable {
+    let title: String?
+    let url: String?
+    let imageUrl: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case title
+        case url
+        case imageUrl = "image_url"
+    }
 }

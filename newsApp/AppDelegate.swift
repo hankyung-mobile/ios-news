@@ -263,38 +263,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard Reachability.isConnectedToNetwork() else { return }
         
         
-        let date = DateFormatter()
-        date.dateFormat = "yyyy-MM-dd"
+//        let date = DateFormatter()
+//        date.dateFormat = "yyyy-MM-dd"
+//        
+//        //앱 다시 시작 && 푸시 알림으로 시작된 경우 날짜 체크 건너뛰기
+//        if !isLaunchedByPushNotification &&  date.string(from: applicationDidEnterBackgroundTime) != date.string(from: Date()) {
+//            exit(0)
+//        }
         
-        //앱 다시 시작 && 푸시 알림으로 시작된 경우 날짜 체크 건너뛰기
-        if !isLaunchedByPushNotification &&  date.string(from: applicationDidEnterBackgroundTime) != date.string(from: Date()) {
-            exit(0)
-        }
+        // ✅ 3시간 체크 로직
+          let threeHoursInSeconds: TimeInterval = 3 * 60 * 60  // 3시간 = 10800초
+          let currentTime = Date()
+          let timeDifference = currentTime.timeIntervalSince(applicationDidEnterBackgroundTime)
+          
+          // 디버깅용 로그
+          let elapsedMinutes = Int(timeDifference / 60)
+          let elapsedHours = elapsedMinutes / 60
+          let remainingMinutes = elapsedMinutes % 60
+          print("⏰ 백그라운드 경과 시간: \(elapsedHours)시간 \(remainingMinutes)분")
+          
+          // 앱 다시 시작 && 푸시 알림으로 시작된 경우 시간 체크 건너뛰기
+          if !isLaunchedByPushNotification && timeDifference >= threeHoursInSeconds {
+              print("🔄 3시간 경과 - 앱 재구동 (스플래시부터 시작)")
+              
+              // 로그인 상태, 캐시, 쿠키는 그대로 유지하고 앱만 재시작
+              // UserDefaults, Keychain, 쿠키 등은 exit(0)해도 유지됨
+              exit(0)
+          }
         
         isLaunchedByPushNotification = false
 
         //선택된 탭 확인 - 30분 이상 백그라운드였을 때만 첫 번째 탭으로 이동
-        if (applicationDidEnterBackgroundTime + 60 * 30) < Date() {
-            guard let tabbarViewControllers = UIApplication.shared.keyWindowCompat?.rootViewController as? UITabBarController else { return }
-            tabbarViewControllers.selectedIndex = 0
-        }
+//        if (applicationDidEnterBackgroundTime + 60 * 30) < Date() {
+//            guard let tabbarViewControllers = UIApplication.shared.keyWindowCompat?.rootViewController as? UITabBarController else { return }
+//            tabbarViewControllers.selectedIndex = 0
+//        }
         
-        guard let tabbarViewControllers = UIApplication.shared.keyWindowCompat?.rootViewController as? UITabBarController else { return }
-        guard let currentViewController = tabbarViewControllers.selectedViewController else {return}
-        
-        if currentViewController.restorationIdentifier == "settingNavigation"  {
-            if let snvc = currentViewController as? UINavigationController, let svc = snvc.topViewController as? SettingTableViewController {
-                svc.reloadPushStatusSection()
-            }
-        }
-        else if currentViewController.restorationIdentifier == "pushNavigation" {
-
-            if let pnvc = currentViewController as? UINavigationController, let pvc = pnvc.topViewController as? PushViewController {
-                DispatchQueue.main.async {
-                    pvc.getPushNewsListData()
-                }
-            }
-        }
+//        guard let tabbarViewControllers = UIApplication.shared.keyWindowCompat?.rootViewController as? UITabBarController else { return }
+//        guard let currentViewController = tabbarViewControllers.selectedViewController else {return}
+//        
+//        if currentViewController.restorationIdentifier == "settingNavigation"  {
+//            if let snvc = currentViewController as? UINavigationController, let svc = snvc.topViewController as? SettingTableViewController {
+//                svc.reloadPushStatusSection()
+//            }
+//        }
+//        else if currentViewController.restorationIdentifier == "pushNavigation" {
+//
+//            if let pnvc = currentViewController as? UINavigationController, let pvc = pnvc.topViewController as? PushViewController {
+//                DispatchQueue.main.async {
+//                    pvc.getPushNewsListData()
+//                }
+//            }
+//        }
  
     }
 
@@ -305,6 +325,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if UIApplication.shared.applicationIconBadgeNumber > 0 {
 //            tabbarViewControllers.tabBar.items?[0].badgeValue = "1"
         }
+        
+        checkNetworkStatus()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
