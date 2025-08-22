@@ -40,7 +40,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHu-jN-DTd">
-                                        <rect key="frame" x="10" y="6" width="44" height="44"/>
+                                        <rect key="frame" x="10" y="10" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="6Kr-w5-aqD"/>
                                             <constraint firstAttribute="height" constant="44" id="yg2-Th-7OS"/>
@@ -54,7 +54,7 @@
                                     <constraint firstAttribute="bottom" secondItem="Uan-BE-0qL" secondAttribute="bottom" constant="3" id="EKt-tX-lqC"/>
                                     <constraint firstItem="Uan-BE-0qL" firstAttribute="centerX" secondItem="oXk-9z-0uZ" secondAttribute="centerX" id="O8Y-O2-0xu"/>
                                     <constraint firstItem="oXk-9z-0uZ" firstAttribute="centerX" secondItem="wWR-o3-zDm" secondAttribute="centerX" id="Qml-Q9-qr5"/>
-                                    <constraint firstItem="ZHu-jN-DTd" firstAttribute="top" secondItem="wWR-o3-zDm" secondAttribute="top" constant="6" id="boW-Jt-oSl"/>
+                                    <constraint firstItem="ZHu-jN-DTd" firstAttribute="top" secondItem="wWR-o3-zDm" secondAttribute="top" constant="10" id="boW-Jt-oSl"/>
                                     <constraint firstItem="oXk-9z-0uZ" firstAttribute="top" secondItem="wWR-o3-zDm" secondAttribute="top" constant="4" id="jL8-75-D7H"/>
                                     <constraint firstItem="Uan-BE-0qL" firstAttribute="leading" secondItem="ZHu-jN-DTd" secondAttribute="trailing" constant="43" id="mgn-As-xmY"/>
                                     <constraint firstAttribute="height" constant="50" id="udq-RU-mMa"/>

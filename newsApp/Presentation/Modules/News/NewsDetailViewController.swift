@@ -895,6 +895,7 @@ extension NewsDetailViewController: WKScriptMessageHandler {
             let period = dictionary["period"] as? Int
             let placeCode = dictionary["placeCode"] as? String ?? ""
             let deptid = dictionary["deptid"] as? String ?? ""
+            let slug = dictionary["slug"] as? String ?? ""
             
             
             if type == "newsList" {
@@ -911,7 +912,8 @@ extension NewsDetailViewController: WKScriptMessageHandler {
                      "tagid": tagid,
                      "period": period ?? "",
                      "place_code": placeCode,
-                     "deptid": deptid
+                     "deptid": deptid,
+                     "slug": slug
                  ]
                 
                 // 벋은 데이터로 타이틀 전달

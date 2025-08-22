@@ -273,17 +273,32 @@ class DynamicGridButtonCell: UITableViewCell {
         button.addSubview(containerStack)
         containerStack.translatesAutoresizingMaskIntoConstraints = false
         
+//        NSLayoutConstraint.activate([
+//            containerStack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+//            containerStack.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+//            containerStack.leadingAnchor.constraint(greaterThanOrEqualTo: button.leadingAnchor, constant: 4),
+//            containerStack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor, constant: -4),
+//            
+//            imageView.widthAnchor.constraint(equalToConstant: 36),
+//            imageView.heightAnchor.constraint(equalToConstant: 36),
+//            
+//            label.widthAnchor.constraint(lessThanOrEqualTo: button.widthAnchor, constant: -8)
+//        ])
+        
         NSLayoutConstraint.activate([
             containerStack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             containerStack.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            containerStack.leadingAnchor.constraint(greaterThanOrEqualTo: button.leadingAnchor, constant: 4),
-            containerStack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor, constant: -4),
             
             imageView.widthAnchor.constraint(equalToConstant: 36),
             imageView.heightAnchor.constraint(equalToConstant: 36),
             
-            label.widthAnchor.constraint(lessThanOrEqualTo: button.widthAnchor, constant: -8)
+            // containerStack의 leading/trailing 제약조건도 제거하여 완전히 자유롭게
         ])
+
+        // 추가적으로 label 설정도 수정:
+        label.numberOfLines = 1 // 1줄 유지
+        label.lineBreakMode = .byClipping // 또는 .byWordWrapping
+        label.adjustsFontSizeToFitWidth = false // 폰트 크기 자동 조정 비활성화
         
         // 터치 이벤트
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)

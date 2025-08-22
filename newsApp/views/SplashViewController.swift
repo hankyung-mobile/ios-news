@@ -173,7 +173,6 @@ class SplashViewController: UIViewController {
 
 
     func changeRootView() {
-
         guard self.check == 2 else {return}
         
         DispatchQueue.main.async {
@@ -187,6 +186,10 @@ class SplashViewController: UIViewController {
 //                }
 //                let homeNav = UINavigationController(rootViewController: tabbarController)
                 UIApplication.shared.windows.first?.rootViewController = tabbarController
+                
+                // 첫 실행 체크 및 도움말 뷰 표시
+                self.checkAndShowTutorial(on: tabbarController)
+                
             } else {
                 let tabbarController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController") as! TabBarController
                 
@@ -195,9 +198,38 @@ class SplashViewController: UIViewController {
                     tabbarController.selectedIndex = 2
                 }
                 UIApplication.shared.windows.first?.rootViewController = tabbarController
+                
+                // 첫 실행 체크 및 도움말 뷰 표시
+                self.checkAndShowTutorial(on: tabbarController)
             }
             UIApplication.shared.windows.first?.makeKeyAndVisible()
-            
+        }
+    }
+
+    func checkAndShowTutorial(on viewController: UIViewController) {
+        let hasShownTutorial = UserDefaults.standard.bool(forKey: "hasShownTutorial")
+        
+        if !hasShownTutorial {
+            // 약간의 딜레이를 주어 메인 뷰가 완전히 로드된 후 실행
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+                self.showTutorialView(on: viewController)
+            }
+        }
+    }
+
+    func showTutorialView(on viewController: UIViewController) {
+        // Storyboard에서 도움말 뷰컨트롤러 생성
+        guard let tutorialVC = UIStoryboard(name: "Usage", bundle: nil).instantiateViewController(withIdentifier: "UsageViewController") as? UsageViewController else {
+            return
+        }
+        
+        // 모달로 표시
+        tutorialVC.modalPresentationStyle = .fullScreen
+        tutorialVC.modalTransitionStyle = .crossDissolve
+        
+        viewController.present(tutorialVC, animated: true) {
+            // 도움말이 표시되면 플래그 저장
+            UserDefaults.standard.set(true, forKey: "hasShownTutorial")
         }
     }
     
