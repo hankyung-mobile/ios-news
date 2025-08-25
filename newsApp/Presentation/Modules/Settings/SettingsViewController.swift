@@ -58,6 +58,14 @@ class SettingsViewController: UIViewController {
         setupButtonEvents()
         setupNotificationObserver()
         bindViewModel()
+        
+        // FAQ URL 처리용 Notification 등록
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFAQURL),
+            name: NSNotification.Name("OpenFAQURL"),
+            object: nil
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -202,7 +210,11 @@ class SettingsViewController: UIViewController {
             .subscribe(onNext: { [weak self] _ in
                 checkNetworkStatus()
                 
-                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help/policy")!)
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "stg-"
+                }
+                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://\(customUrl)webview.hankyung.com/help/policy")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
                 navigationController.modalPresentationStyle = .formSheet
                 self?.present(navigationController, animated: true)
@@ -215,7 +227,11 @@ class SettingsViewController: UIViewController {
             .subscribe(onNext: { [weak self] _ in
                 checkNetworkStatus()
                 
-                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help/privacy")!)
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "stg-"
+                }
+                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://\(customUrl)webview.hankyung.com/help/privacy")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
                 navigationController.modalPresentationStyle = .formSheet
                 self?.present(navigationController, animated: true)
@@ -228,7 +244,11 @@ class SettingsViewController: UIViewController {
             .subscribe(onNext: { [weak self] _ in
                 checkNetworkStatus()
                 
-                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://stg-webview.hankyung.com/help")!)
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "stg-"
+                }
+                let internalBrowserVC = InternalBrowserViewController(url: URL(string: "https://\(customUrl)webview.hankyung.com/help")!)
                 let navigationController = UINavigationController(rootViewController: internalBrowserVC)
                 navigationController.modalPresentationStyle = .formSheet
                 self?.present(navigationController, animated: true)
@@ -241,7 +261,12 @@ class SettingsViewController: UIViewController {
             .subscribe(onNext: { [weak self] _ in
                 checkNetworkStatus()
                 
-                self?.openNewsDetail(url: URL(string: "https://stg-webview.hankyung.com/newsletter")!, title: "뉴스레터")
+                
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "stg-"
+                }
+                self?.openNewsDetail(url: URL(string: "https://\(customUrl)webview.hankyung.com/newsletter")!, title: "뉴스레터")
                 
             })
             .disposed(by: disposeBag)
@@ -456,6 +481,17 @@ class SettingsViewController: UIViewController {
                 self?.updateUI(for: status)
             })
             .disposed(by: disposeBag)
+    }
+    
+    @objc func handleFAQURL(_ notification: Notification) {
+        if let url = notification.userInfo?["url"] as? URL {
+            let internalBrowserVC = InternalBrowserViewController(url: url)
+            let navigationController = UINavigationController(rootViewController: internalBrowserVC)
+            navigationController.modalPresentationStyle = .formSheet
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.present(navigationController, animated: true)
+            }
+        }
     }
 
     private func checkNotificationStatus() {

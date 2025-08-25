@@ -226,17 +226,37 @@ extension AccountViewController: WKNavigationDelegate {
         let hostpath = loadURL[..<index]
         let checkUrl = String(hostpath)
         
+  
         if checkHKSite(url: checkUrl) == "www" && !checkUrl.contains("app-data/auth-callback") {
             
-//            if tabBarViewController?.selectedIndex != 0 {
-//                tabBarViewController?.selectedIndex = 0
-//            }
+            // 특정 FAQ URL 체크
+            if checkUrl == "https://www.hankyung.com/help/faq/webservice" ||
+               checkUrl == "https://stg-www.hankyung.com/help/faq/webservice" {
+                
+                // FAQ 웹서비스 페이지에 대한 특별 처리 로직
+                var customUrl: String = ""
+                if currentServer == .DEV {
+                    customUrl = "stg-"
+                }
+                let url = URL(string: "https://\(customUrl)webview.hankyung.com/help/faq/webservice")!
+                
+                // NotificationCenter로 URL 전달
+                NotificationCenter.default.post(name: NSNotification.Name("OpenFAQURL"),
+                                              object: nil,
+                                              userInfo: ["url": url])
+                
+                // 현재 뷰 닫기
+                self.presentingViewController?.dismiss(animated: true)
+                
+                decisionHandler(.cancel)
+                return
+            }
             
             self.presentingViewController?.dismiss(animated: true)
-            
             decisionHandler(.cancel)
             return
         }
+
         
         if externalDomain.count > 0 {
             for url in externalDomain {

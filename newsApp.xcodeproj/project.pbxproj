@@ -717,7 +717,8 @@
 				69D44B602DFAB05100A7254E /* CommonView */,
 				69AB32AD2E1647B70048A682 /* SectionList */,
 				696E3F382DDC4316007A916E /* News */,
-				696E3F372DDC430D007A916E /* Premium */,
+				696E3F372DDC430D007A916E /* AI */,
+				69CA67182E5843D400126F0D /* Game */,
 				696E3F362DDC4308007A916E /* Market */,
 				696E3F352DDC42FF007A916E /* Notification */,
 				696E3F342DDC42F3007A916E /* Settings */,
@@ -780,7 +781,7 @@
 			path = Market;
 			sourceTree = "<group>";
 		};
-		696E3F372DDC430D007A916E /* Premium */ = {
+		696E3F372DDC430D007A916E /* AI */ = {
 			isa = PBXGroup;
 			children = (
 				69D44B632DFC156C00A7254E /* PremiumViewController.swift */,
@@ -788,10 +789,8 @@
 				69D44B652DFC167100A7254E /* PremiumPageViewModel.swift */,
 				6986EFCE2E24F23700F12436 /* AIViewController.swift */,
 				6986EFD02E24F24E00F12436 /* AiSearch.storyboard */,
-				69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */,
-				69D1BA732E3C4F1100623DE5 /* Game.storyboard */,
 			);
-			path = Premium;
+			path = AI;
 			sourceTree = "<group>";
 		};
 		696E3F382DDC4316007A916E /* News */ = {
@@ -1068,6 +1067,15 @@
 				69CA67152E5804BA00126F0D /* Usage.storyboard */,
 			);
 			path = Usage;
+			sourceTree = "<group>";
+		};
+		69CA67182E5843D400126F0D /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				69D1BA712E3C4F0A00623DE5 /* GameViewController.swift */,
+				69D1BA732E3C4F1100623DE5 /* Game.storyboard */,
+			);
+			path = Game;
 			sourceTree = "<group>";
 		};
 		69D0CFAE2E4D9655007FF10B /* Cell */ = {

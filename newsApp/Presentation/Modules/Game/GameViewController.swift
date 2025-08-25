@@ -1,13 +1,23 @@
+//
+//  GameViewController.swift
+//  newsApp
+//
+//  Created by jay on 8/1/25.
+//  Copyright © 2025 hkcom. All rights reserved.
+//
+
 import UIKit
 import WebKit
 
-class AIViewController: UIViewController {
+class GameViewController: UIViewController {
     
     // MARK: - Properties
     private var webView: WKWebView!
     
     // 여기서 URL 직접 설정
-    private let urlString = "https://markup.hankyung.com/app/ai/index.html" // 원하는 URL로 변경
+    private let urlString = "https://stg-webview.hankyung.com/game" // 원하는 URL로 변경
+    
+    private var isFirstLoad = true
     
     // MARK: - Initializer
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -23,6 +33,36 @@ class AIViewController: UIViewController {
         super.viewDidLoad()
         setupWebView()
         loadURL()
+        
+        // 로그인 성공 알림 구독
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLoginSuccess),
+            name: .loginSuccess,
+            object: nil
+        )
+        
+        // 로그아웃 성공 알림 구독
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLogoutSuccess),
+            name: .logoutSuccess,
+            object: nil
+        )
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if !isFirstLoad {
+            callScriptWhenViewClosed(tokensArray: getUserTokensArray())
+        }
+        
+        isFirstLoad = false
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup
@@ -42,17 +82,30 @@ class AIViewController: UIViewController {
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor) // 변경: safeArea 사용
+            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
     private func loadURL() {
-        guard let url = URL(string: urlString) else {
+        var customUrl: String = ""
+        if currentServer == .DEV {
+            customUrl = "stg-"
+        }
+        guard let url = URL(string: "https://\(customUrl)webview.hankyung.com/game") else {
             showAlert(message: "올바르지 않은 URL입니다.")
             return
         }
         
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        
+        let parameter = returnAccountParameter()
+        
+        for (key, value) in parameter {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "GET"
+        
         webView.load(request)
     }
     
@@ -62,10 +115,43 @@ class AIViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "확인", style: .default))
         present(alert, animated: true)
     }
+    
+    @objc private func handleLoginSuccess() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.callScriptWhenViewClosed(tokensArray: getUserTokensArray())
+        }
+    }
+
+    @objc private func handleLogoutSuccess() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.callScriptWhenViewClosed(tokensArray: getUserTokensArray())
+        }
+    }
+    
+    private func callScriptWhenViewClosed(tokensArray: [String]) {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: tokensArray, options: [])
+            
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                let script = "window.onGetMobileInfo(\(jsonString))"
+                print("실행될 JavaScript 스크립트:\n\(script)")
+                
+                self.webView.evaluateJavaScript(script) { result, error in
+                    if let error = error {
+                        print("JavaScript 호출 오류: \(error.localizedDescription)")
+                    } else {
+                        print("JavaScript 함수 호출 성공, 결과: \(result ?? "없음")")
+                    }
+                }
+            }
+        } catch {
+            print("JSON 직렬화 오류: \(error.localizedDescription)")
+        }
+    }
 }
 
 // MARK: - WKNavigationDelegate
-extension AIViewController: WKNavigationDelegate {
+extension GameViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         // 로딩 시작
@@ -75,11 +161,6 @@ extension AIViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         // 로딩 완료
         print("웹뷰 로딩 완료")
-        
-        // 타이틀 설정 제거 (탭바 아이템 이름 유지를 위해)
-        // if let title = webView.title, !title.isEmpty {
-        //     self.title = title
-        // }
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -90,7 +171,7 @@ extension AIViewController: WKNavigationDelegate {
 }
 
 // MARK: - WKUIDelegate
-extension AIViewController: WKUIDelegate {
+extension GameViewController: WKUIDelegate {
     
     // alert 처리
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
@@ -113,17 +194,3 @@ extension AIViewController: WKUIDelegate {
         present(alert, animated: true)
     }
 }
-
-// MARK: - 사용 예시
-/*
-// 간단한 사용 방법:
-let aiViewController = AIViewController()
-navigationController?.pushViewController(aiViewController, animated: true)
-
-// 또는 modal로 띄우기:
-let aiViewController = AIViewController()
-let navController = UINavigationController(rootViewController: aiViewController)
-present(navController, animated: true)
-
-// Storyboard에서도 바로 사용 가능
-*/

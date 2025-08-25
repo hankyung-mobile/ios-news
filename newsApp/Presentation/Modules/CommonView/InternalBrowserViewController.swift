@@ -715,7 +715,7 @@ extension InternalBrowserViewController: WKNavigationDelegate {
     }
     
     private func presentPdfViewController(url: String) {
-        guard let pvc = self.storyboard?.instantiateViewController(withIdentifier: "PdfWebViewViewController") as? PdfWebViewViewController else {
+        guard let pvc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PdfWebViewViewController") as? PdfWebViewViewController else {
             return
         }
         pvc.pdfUrl = url
