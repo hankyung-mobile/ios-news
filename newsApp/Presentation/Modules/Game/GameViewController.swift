@@ -8,45 +8,32 @@
 
 import UIKit
 import WebKit
+import RxSwift
+import RxCocoa
 
 class GameViewController: UIViewController {
     
     // MARK: - Properties
-    private var webView: WKWebView!
+    private var webContentController: WebContentController!
+    private let disposeBag = DisposeBag()
     
-    // 여기서 URL 직접 설정
-    private let urlString = "https://stg-webview.hankyung.com/game" // 원하는 URL로 변경
+    // 하드코딩된 URL
     
-    private var isFirstLoad = true
+    private let urlString = "https://stg-webview.hankyung.com/game"
     
-    // MARK: - Initializer
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+    private var hasShownAd: Bool = false
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupWebView()
-        loadURL()
         
-        // 로그인 성공 알림 구독
+        setupWebContentController()
+        
+        // 메모리 경고 관찰
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleLoginSuccess),
-            name: .loginSuccess,
-            object: nil
-        )
-        
-        // 로그아웃 성공 알림 구독
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleLogoutSuccess),
-            name: .logoutSuccess,
+            selector: #selector(handleMemoryWarning),
+            name: UIApplication.didReceiveMemoryWarningNotification,
             object: nil
         )
     }
@@ -54,39 +41,29 @@ class GameViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if !isFirstLoad {
-            callScriptWhenViewClosed(tokensArray: getUserTokensArray())
+        if !hasShownAd {
+            hasShownAd = true
+            
+            // 약간의 딜레이로 더 자연스럽게
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                // AdMobManager.shared.showAd(from: self)
+            }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        isFirstLoad = false
+        // 화면이 나타나기 전에 웹뷰 활성화
+        webContentController?.optimizeForForeground()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Setup
-    private func setupWebView() {
-        // WKWebView 설정
-        let webConfiguration = WKWebViewConfiguration()
-        webView = WKWebView(frame: .zero, configuration: webConfiguration)
-        webView.navigationDelegate = self
-        webView.uiDelegate = self
-        
-        // Auto Layout 설정
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(webView)
-        
-        // 제약 조건 설정 (탭바를 고려한 safe area 사용)
-        NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-    }
-    
-    private func loadURL() {
+    // MARK: - Setup Methods
+    private func setupWebContentController() {
         var customUrl: String = ""
         if currentServer == .DEV {
             customUrl = "stg-"
@@ -96,17 +73,26 @@ class GameViewController: UIViewController {
             return
         }
         
-        var request = URLRequest(url: url)
+        // WebContentController 생성 및 설정
+        webContentController = WebContentController(url: url)
+        webContentController.webNavigationDelegate = self
         
-        let parameter = returnAccountParameter()
+        // Child View Controller로 추가
+        addChild(webContentController)
+        view.addSubview(webContentController.view)
+        webContentController.didMove(toParent: self)
         
-        for (key, value) in parameter {
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "GET"
+        // Auto Layout 설정 - 전체 화면
+        webContentController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webContentController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            webContentController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webContentController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webContentController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
-        webView.load(request)
+        // 즉시 로드 시작
+        webContentController.preloadWebView()
     }
     
     // MARK: - Helper Methods
@@ -116,81 +102,39 @@ class GameViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    @objc private func handleLoginSuccess() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            self?.callScriptWhenViewClosed(tokensArray: getUserTokensArray())
-        }
-    }
-
-    @objc private func handleLogoutSuccess() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            self?.callScriptWhenViewClosed(tokensArray: getUserTokensArray())
-        }
+    // MARK: - Memory Management
+    @objc private func handleMemoryWarning() {
+        NotificationCenter.default.post(name: NSNotification.Name("OptimizeWebViewMemory"), object: nil)
+        webContentController?.optimizeForBackground()
     }
     
-    private func callScriptWhenViewClosed(tokensArray: [String]) {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: tokensArray, options: [])
-            
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                let script = "window.onGetMobileInfo(\(jsonString))"
-                print("실행될 JavaScript 스크립트:\n\(script)")
-                
-                self.webView.evaluateJavaScript(script) { result, error in
-                    if let error = error {
-                        print("JavaScript 호출 오류: \(error.localizedDescription)")
-                    } else {
-                        print("JavaScript 함수 호출 성공, 결과: \(result ?? "없음")")
-                    }
-                }
-            }
-        } catch {
-            print("JSON 직렬화 오류: \(error.localizedDescription)")
-        }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        handleMemoryWarning()
     }
 }
 
-// MARK: - WKNavigationDelegate
-extension GameViewController: WKNavigationDelegate {
-    
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        // 로딩 시작
-        print("웹뷰 로딩 시작")
-    }
-    
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        // 로딩 완료
-        print("웹뷰 로딩 완료")
-    }
-    
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        // 로딩 실패
-        print("웹뷰 로딩 실패: \(error.localizedDescription)")
-        showAlert(message: "페이지를 불러올 수 없습니다.")
+// MARK: - WebNavigationDelegate
+extension GameViewController: WebNavigationDelegate {
+    func openNewsDetail(url: URL, title: String?) {
+        print("AIViewController: Opening news detail for URL: \(url)")
+        
+        let newsDetailVC = NewsDetailViewController(url: url, title: title)
+        newsDetailVC.webNavigationDelegate = self
+        newsDetailVC.hidesBottomBarWhenPushed = false
+        
+        navigationController?.pushViewController(newsDetailVC, animated: true)
     }
 }
 
-// MARK: - WKUIDelegate
-extension GameViewController: WKUIDelegate {
-    
-    // alert 처리
-    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-            completionHandler()
-        })
-        present(alert, animated: true)
-    }
-    
-    // confirm 처리
-    func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-            completionHandler(true)
-        })
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
-            completionHandler(false)
-        })
-        present(alert, animated: true)
-    }
-}
+// MARK: - 사용 예시
+/*
+// Storyboard에서 사용하는 경우:
+// 1. Storyboard에서 UIViewController를 추가
+// 2. Class를 AIViewController로 설정
+// 3. IBOutlet 연결 불필요
+
+// 코드로 생성하는 경우:
+let aiViewController = AIViewController()
+navigationController?.pushViewController(aiViewController, animated: true)
+*/

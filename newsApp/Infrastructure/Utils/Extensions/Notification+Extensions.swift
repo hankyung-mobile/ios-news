@@ -17,4 +17,5 @@ extension Notification.Name {
     static let reporterDeleted = Notification.Name("reporterDeleted")
     static let closeSearchView = Notification.Name("closeSearchView")
     static let scrollToTop = Notification.Name("scrollToTop")
+    static let networkStatusChanged = Notification.Name("networkStatusChanged")
 }

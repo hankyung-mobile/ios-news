@@ -47,6 +47,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UNUserNotificationCenter.current().delegate = self
         
+        NetworkStatusManager.shared.startMonitoring()
+        
+        // 네트워크 상태 변화 알림 구독
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(networkStatusChanged),
+            name: .networkStatusChanged,
+            object: nil
+        )
+        
         if !UserDefaults.standard.bool(forKey: "isLaunched") {
             
             UserDefaults.standard.set(true, forKey: "isLaunched")
@@ -334,6 +344,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         
         self.saveContext()
+        NetworkStatusManager.shared.stopMonitoring()
+        NotificationCenter.default.removeObserver(
+            self,
+            name: .networkStatusChanged,  // 이 알림만 제거
+            object: nil
+        )
     }
 
     // MARK: - Core Data stack
@@ -454,6 +470,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             )
             .disposed(by: disposeBag)
+    }
+    
+    @objc private func networkStatusChanged(_ notification: Notification) {
+        guard let isConnected = notification.userInfo?["isConnected"] as? Bool else { return }
+        
+        if isConnected {
+            print("AppDelegate: 네트워크 연결됨!")
+            handleNetworkConnected() // 원하는 함수 호출
+        } else {
+      
+        }
+    }
+    
+    private func handleNetworkConnected() {
+        if let masterData = AppDataManager.shared.getMasterData(), masterData.data?.externalUrls?.count ?? 0 > 0 {
+            AppDataManager.shared.saveAppData(masterData)
+        } else if AppDataManager.shared.getMasterData() == nil {
+            loadMasterData()
+        }
+        if let newsData = AppDataManager.shared.getNewsData(), newsData.data?.slide?.count ?? 0 > 0 {
+            AppDataManager.shared.saveNewsData(newsData)
+        } else if AppDataManager.shared.getNewsData() == nil {
+            loadNewsData()
+        }
+        
+        if let marketData = AppDataManager.shared.getMarketData(), marketData.data?.slide?.count ?? 0 > 0 {
+            AppDataManager.shared.saveMarketData(marketData)
+        } else if AppDataManager.shared.getMarketData() == nil {
+            loadMarketData()
+        }
+        
     }
     
 }

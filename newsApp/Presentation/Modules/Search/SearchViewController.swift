@@ -404,13 +404,21 @@ extension SearchViewController: UICollectionViewDataSource {
 }
 
 // MARK: - UICollectionViewDelegate
-extension SearchViewController: UICollectionViewDelegate {
+extension SearchViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedItem = searchItems[indexPath.item]
         print("🎯 탭 클릭: \(selectedItem.title) (index: \(indexPath.item))")
         
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         goToPage(indexPath.item)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        let isSmallScreen = UIScreen.main.bounds.height <= 667 // iPhone 7/8/SE
+        let rightInset: CGFloat = isSmallScreen ? 50 : 20
+        
+        return UIEdgeInsets(top: 0, left: 20, bottom: 0, right: rightInset)
     }
 }
 

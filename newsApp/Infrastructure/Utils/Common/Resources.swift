@@ -398,6 +398,14 @@ func checkUrlPattern(url: String) -> String {
             return "consensus"
         }
         
+        // 하위 경로 포함 버전
+        regex = try NSRegularExpression(pattern: "^(http|https)://(stg-)?webview\\.hankyung\\.com/game(/.*)?$")
+        matchCheck = regex.numberOfMatches(in: url, options: [], range: NSRange(location: 0, length: (url as NSString).length))
+        
+        if matchCheck > 0 {
+            return "consensus" // 또는 원하는 리턴값
+        }
+        
         //klay 이벤트
         
 

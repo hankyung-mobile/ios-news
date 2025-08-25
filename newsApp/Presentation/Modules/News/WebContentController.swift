@@ -163,6 +163,7 @@ class WebContentController: UIViewController, WKUIDelegate {
         // 백그라운드에서 렌더링 허용
         webView.isOpaque = false
         webView.uiDelegate = self
+        webView.allowsBackForwardNavigationGestures = true
         
         self.webView.configuration.userContentController.add(self, name: "openNativeNewsList")
         self.webView.configuration.userContentController.add(self, name: "shareURL")
